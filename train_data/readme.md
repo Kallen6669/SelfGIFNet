@@ -1,0 +1,1 @@
+该文件夹为训练数据，把"visible", "infrared", "visible_focus_near", 和 "visible_focus_far"这些数据放在这里。
