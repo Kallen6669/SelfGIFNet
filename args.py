@@ -2,8 +2,8 @@ class Args():
     # 训练参数
     path_ir = ''
     cuda = 1
-    lr = 1e-3
-    epochs = 2
+    lr = 1e-4
+    epochs = 40
     batch_size = 8
     device = 0;
 

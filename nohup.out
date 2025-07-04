@@ -1,0 +1,515 @@
+[38;5;2m[i 0704 01:16:02.248677 92 compiler.py:956] Jittor(1.3.9.14) src: /home/juyahao/.conda/envs/jittor/lib/python3.8/site-packages/jittor[m
+[38;5;2m[i 0704 01:16:02.249980 92 compiler.py:957] g++ at /usr/bin/g++(9.4.0)[m
+[38;5;2m[i 0704 01:16:02.250028 92 compiler.py:958] cache_path: /home/juyahao/.cache/jittor/jt1.3.9/g++9.4.0/py3.8.20/Linux-5.4.0-10x07/AMDRyzen95900Xx4a/e984/default[m
+[38;5;2m[i 0704 01:16:02.263061 92 install_cuda.py:96] cuda_driver_version: [12, 2][m
+[38;5;2m[i 0704 01:16:02.263222 92 install_cuda.py:84] restart /home/juyahao/.conda/envs/jittor/bin/python ['train.py'][m
+[38;5;2m[i 0704 01:16:02.336812 28 compiler.py:956] Jittor(1.3.9.14) src: /home/juyahao/.conda/envs/jittor/lib/python3.8/site-packages/jittor[m
+[38;5;2m[i 0704 01:16:02.338430 28 compiler.py:957] g++ at /usr/bin/g++(9.4.0)[m
+[38;5;2m[i 0704 01:16:02.338509 28 compiler.py:958] cache_path: /home/juyahao/.cache/jittor/jt1.3.9/g++9.4.0/py3.8.20/Linux-5.4.0-10x07/AMDRyzen95900Xx4a/e984/default[m
+[38;5;2m[i 0704 01:16:02.351598 28 install_cuda.py:96] cuda_driver_version: [12, 2][m
+[38;5;2m[i 0704 01:16:02.353791 28 __init__.py:412] Found /home/juyahao/.cache/jittor/jtcuda/cuda12.2_cudnn8_linux/bin/nvcc(12.2.140) at /home/juyahao/.cache/jittor/jtcuda/cuda12.2_cudnn8_linux/bin/nvcc.[m
+[38;5;2m[i 0704 01:16:02.401345 28 __init__.py:412] Found gdb(10.2) at /usr/bin/gdb.[m
+[38;5;2m[i 0704 01:16:02.403154 28 __init__.py:412] Found addr2line(2.34) at /usr/bin/addr2line.[m
+[38;5;2m[i 0704 01:16:02.479318 28 compiler.py:1013] cuda key:cu12.2.140_sm_86[m
+[38;5;2m[i 0704 01:16:02.694979 28 __init__.py:227] Total mem: 125.82GB, using 16 procs for compiling.[m
+[38;5;2m[i 0704 01:16:02.776145 28 jit_compiler.cc:28] Load cc_path: /usr/bin/g++[m
+[38;5;2m[i 0704 01:16:02.915385 28 init.cc:63] Found cuda archs: [86,][m
+开始训练
+数据集大小: 19999
+Batch大小: 32
+总epoch数: 40
+学习率: 0.0001
+Epochs:   0%|          | 0/40 [00:00<?, ?it/s]
+Epoch 1/40:   0%|          | 0/625 [00:00<?, ?it/s][A[38;5;3m[w 0704 01:16:20.564084 28 grad.cc:81] grads[24] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1_mfif.weight' doesn't have gradient. It will be set to zero: Var(10574:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1_mfif.weight,7ff20589fa00)[1,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564119 28 grad.cc:81] grads[25] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1_mfif.bias' doesn't have gradient. It will be set to zero: Var(10580:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1_mfif.bias,7ff20589fc00)[1,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564129 28 grad.cc:81] grads[32] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv_mfif.weight' doesn't have gradient. It will be set to zero: Var(11363:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv_mfif.weight,7ff2058bee00)[98,1,5,5,][m
+[38;5;3m[w 0704 01:16:20.564138 28 grad.cc:81] grads[33] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv_mfif.bias' doesn't have gradient. It will be set to zero: Var(11369:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv_mfif.bias,7ff2058a1600)[98,][m
+[38;5;3m[w 0704 01:16:20.564146 28 grad.cc:81] grads[36] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V_mfif.weight' doesn't have gradient. It will be set to zero: Var(11479:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V_mfif.weight,7ff205900000)[98,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564155 28 grad.cc:81] grads[37] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V_mfif.bias' doesn't have gradient. It will be set to zero: Var(11485:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V_mfif.bias,7ff2058a1800)[98,][m
+[38;5;3m[w 0704 01:16:20.564163 28 grad.cc:81] grads[40] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj_mfif.weight' doesn't have gradient. It will be set to zero: Var(11595:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj_mfif.weight,7ff205913000)[98,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564178 28 grad.cc:81] grads[41] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj_mfif.bias' doesn't have gradient. It will be set to zero: Var(11601:1:2:2:i0:o1:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj_mfif.bias,7ff2058a2600)[98,][m
+[38;5;3m[w 0704 01:16:20.564186 28 grad.cc:81] grads[44] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK_mfif.weight' doesn't have gradient. It will be set to zero: Var(11711:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK_mfif.weight,7ff205abbe00)[196,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564194 28 grad.cc:81] grads[45] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK_mfif.bias' doesn't have gradient. It will be set to zero: Var(11717:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK_mfif.bias,7ff2058a2800)[196,][m
+[38;5;3m[w 0704 01:16:20.564202 28 grad.cc:81] grads[65] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.weight' doesn't have gradient. It will be set to zero: Var(12299:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.weight,7ff2058bb200)[1,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564211 28 grad.cc:81] grads[66] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.bias' doesn't have gradient. It will be set to zero: Var(12305:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.bias,7ff2058bb400)[1,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564220 28 grad.cc:81] grads[67] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta1.weight' doesn't have gradient. It will be set to zero: Var(12429:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta1.weight,7ff2058bb800)[98,1,1,1,][m
+[38;5;3m[w 0704 01:16:20.564229 28 grad.cc:81] grads[68] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta1.bias' doesn't have gradient. It will be set to zero: Var(12435:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta1.bias,7ff2058bb600)[98,][m
+[38;5;3m[w 0704 01:16:20.564237 28 grad.cc:81] grads[69] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta2.weight' doesn't have gradient. It will be set to zero: Var(12487:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta2.weight,7ff2058bbc00)[98,1,1,1,][m
+[38;5;3m[w 0704 01:16:20.564246 28 grad.cc:81] grads[70] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta2.bias' doesn't have gradient. It will be set to zero: Var(12493:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1_mfif.meta2.bias,7ff2058bba00)[98,][m
+[38;5;3m[w 0704 01:16:20.564254 28 grad.cc:81] grads[73] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv_mfif.weight' doesn't have gradient. It will be set to zero: Var(13088:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv_mfif.weight,7ff205af4800)[98,1,5,5,][m
+[38;5;3m[w 0704 01:16:20.564263 28 grad.cc:81] grads[74] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv_mfif.bias' doesn't have gradient. It will be set to zero: Var(13094:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv_mfif.bias,7ff2058f1a00)[98,][m
+[38;5;3m[w 0704 01:16:20.564271 28 grad.cc:81] grads[77] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V_mfif.weight' doesn't have gradient. It will be set to zero: Var(13204:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V_mfif.weight,7ff205994000)[98,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564285 28 grad.cc:81] grads[78] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V_mfif.bias' doesn't have gradient. It will be set to zero: Var(13210:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V_mfif.bias,7ff2058f1c00)[98,][m
+[38;5;3m[w 0704 01:16:20.564294 28 grad.cc:81] grads[81] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj_mfif.weight' doesn't have gradient. It will be set to zero: Var(13320:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj_mfif.weight,7ff2059a7000)[98,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564302 28 grad.cc:81] grads[82] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj_mfif.bias' doesn't have gradient. It will be set to zero: Var(13326:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj_mfif.bias,7ff2058fea00)[98,][m
+[38;5;3m[w 0704 01:16:20.564311 28 grad.cc:81] grads[85] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK_mfif.weight' doesn't have gradient. It will be set to zero: Var(13436:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK_mfif.weight,7ff2059d6400)[196,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564320 28 grad.cc:81] grads[86] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK_mfif.bias' doesn't have gradient. It will be set to zero: Var(13442:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK_mfif.bias,7ff2058ff400)[196,][m
+[38;5;3m[w 0704 01:16:20.564329 28 grad.cc:81] grads[96] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.0.weight' doesn't have gradient. It will be set to zero: Var(13754:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.0.weight,7ff205b12e00)[196,98,1,1,][m
+[38;5;3m[w 0704 01:16:20.564338 28 grad.cc:81] grads[97] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.0.bias' doesn't have gradient. It will be set to zero: Var(13760:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.0.bias,7ff2058c1600)[196,][m
+[38;5;3m[w 0704 01:16:20.564347 28 grad.cc:81] grads[98] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.2.weight' doesn't have gradient. It will be set to zero: Var(13812:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.2.weight,7ff205b25c00)[98,196,1,1,][m
+[38;5;3m[w 0704 01:16:20.564356 28 grad.cc:81] grads[99] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.2.bias' doesn't have gradient. It will be set to zero: Var(13818:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp_mfif.mlp.2.bias,7ff2058ffe00)[98,][m
+[38;5;3m[w 0704 01:17:01.140530 28 grad.cc:81] grads[18] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1.weight' doesn't have gradient. It will be set to zero: Var(37427:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1.weight,7ff2056e2a00)[1,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140575 28 grad.cc:81] grads[19] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1.bias' doesn't have gradient. It will be set to zero: Var(37507:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.norm1.bias,7ff2058a2c00)[1,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140584 28 grad.cc:81] grads[30] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv.weight' doesn't have gradient. It will be set to zero: Var(38387:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv.weight,7ff205afb800)[98,1,5,5,][m
+[38;5;3m[w 0704 01:17:01.140591 28 grad.cc:81] grads[31] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv.bias' doesn't have gradient. It will be set to zero: Var(38467:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.conv.bias,7ff205dffa00)[98,][m
+[38;5;3m[w 0704 01:17:01.140604 28 grad.cc:81] grads[34] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V.weight' doesn't have gradient. It will be set to zero: Var(38707:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V.weight,7fe8d38a9000)[98,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140612 28 grad.cc:81] grads[35] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V.bias' doesn't have gradient. It will be set to zero: Var(38787:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.V.bias,7ff205dffc00)[98,][m
+[38;5;3m[w 0704 01:17:01.140618 28 grad.cc:81] grads[38] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj.weight' doesn't have gradient. It will be set to zero: Var(39027:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj.weight,7ff205f1c600)[98,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140625 28 grad.cc:81] grads[39] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj.bias' doesn't have gradient. It will be set to zero: Var(39107:1:2:2:i0:o1:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.proj.bias,7ff2056ec400)[98,][m
+[38;5;3m[w 0704 01:17:01.140632 28 grad.cc:81] grads[42] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK.weight' doesn't have gradient. It will be set to zero: Var(39347:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK.weight,7ff2b5812e00)[196,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140639 28 grad.cc:81] grads[43] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK.bias' doesn't have gradient. It will be set to zero: Var(39427:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.0.attn.QK.bias,7ff2059c3200)[196,][m
+[38;5;3m[w 0704 01:17:01.140646 28 grad.cc:81] grads[59] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.weight' doesn't have gradient. It will be set to zero: Var(40707:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.weight,7ff2058f2000)[1,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140653 28 grad.cc:81] grads[60] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.bias' doesn't have gradient. It will be set to zero: Var(40787:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.bias,7ff205f76400)[1,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140661 28 grad.cc:81] grads[61] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta1.weight' doesn't have gradient. It will be set to zero: Var(40867:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta1.weight,7ff2b59ff400)[98,1,1,1,][m
+[38;5;3m[w 0704 01:17:01.140669 28 grad.cc:81] grads[62] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta1.bias' doesn't have gradient. It will be set to zero: Var(40947:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta1.bias,7ff205b8c600)[98,][m
+[38;5;3m[w 0704 01:17:01.140675 28 grad.cc:81] grads[63] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta2.weight' doesn't have gradient. It will be set to zero: Var(41027:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta2.weight,7ff205efde00)[98,1,1,1,][m
+[38;5;3m[w 0704 01:17:01.140682 28 grad.cc:81] grads[64] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta2.bias' doesn't have gradient. It will be set to zero: Var(41107:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.norm1.meta2.bias,7ff2058f1e00)[98,][m
+[38;5;3m[w 0704 01:17:01.140689 28 grad.cc:81] grads[71] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv.weight' doesn't have gradient. It will be set to zero: Var(41667:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv.weight,7ff2052f8800)[98,1,5,5,][m
+[38;5;3m[w 0704 01:17:01.140699 28 grad.cc:81] grads[72] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv.bias' doesn't have gradient. It will be set to zero: Var(41747:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.conv.bias,7ff205efdc00)[98,][m
+[38;5;3m[w 0704 01:17:01.140706 28 grad.cc:81] grads[75] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V.weight' doesn't have gradient. It will be set to zero: Var(41987:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V.weight,7ff205f92e00)[98,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140713 28 grad.cc:81] grads[76] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V.bias' doesn't have gradient. It will be set to zero: Var(42067:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.V.bias,7ff205b8d000)[98,][m
+[38;5;3m[w 0704 01:17:01.140721 28 grad.cc:81] grads[79] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj.weight' doesn't have gradient. It will be set to zero: Var(42307:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj.weight,7ff205b4b800)[98,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140728 28 grad.cc:81] grads[80] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj.bias' doesn't have gradient. It will be set to zero: Var(42387:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.proj.bias,7ff2056e5600)[98,][m
+[38;5;3m[w 0704 01:17:01.140735 28 grad.cc:81] grads[83] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK.weight' doesn't have gradient. It will be set to zero: Var(42627:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK.weight,7ff2b5b67600)[196,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140742 28 grad.cc:81] grads[84] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK.bias' doesn't have gradient. It will be set to zero: Var(42707:1:1:1:i0:o0:s1:n0:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.attn.QK.bias,7ff2b5bffa00)[196,][m
+[38;5;3m[w 0704 01:17:01.140749 28 grad.cc:81] grads[92] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.0.weight' doesn't have gradient. It will be set to zero: Var(43347:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.0.weight,7ff2b5848a00)[196,98,1,1,][m
+[38;5;3m[w 0704 01:17:01.140756 28 grad.cc:81] grads[93] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.0.bias' doesn't have gradient. It will be set to zero: Var(43427:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.0.bias,7ff205bffa00)[196,][m
+[38;5;3m[w 0704 01:17:01.140762 28 grad.cc:81] grads[94] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.2.weight' doesn't have gradient. It will be set to zero: Var(43507:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.2.weight,7ff115be3600)[98,196,1,1,][m
+[38;5;3m[w 0704 01:17:01.140770 28 grad.cc:81] grads[95] 'extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.2.bias' doesn't have gradient. It will be set to zero: Var(43587:1:1:1:i0:o0:s1:n1:g1,float32,extractor_multask.SwinTransformerSpecific.layer1.blocks.1.mlp.mlp.2.bias,7ff2056dae00)[98,][m
+
+Epoch 1/40:   0%|          | 0/625 [00:56<?, ?it/s, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   0%|          | 1/625 [00:56<9:49:14, 56.66s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   0%|          | 2/625 [02:13<11:50:14, 68.40s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   0%|          | 3/625 [03:30<12:32:30, 72.59s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   1%|          | 4/625 [04:49<12:55:17, 74.91s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   1%|          | 5/625 [06:07<13:07:50, 76.24s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   1%|          | 6/625 [07:23<13:04:00, 75.99s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   1%|          | 7/625 [08:41<13:10:40, 76.76s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   1%|▏         | 8/625 [09:59<13:12:58, 77.11s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   1%|▏         | 9/625 [11:18<13:18:26, 77.77s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   2%|▏         | 10/625 [12:36<13:17:01, 77.76s/it, IM_loss=0.1035, MFIF_loss=1.2557, LR=1.00e-04][A
+Epoch 1/40:   2%|▏         | 10/625 [13:56<13:17:01, 77.76s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   2%|▏         | 11/625 [13:56<13:21:53, 78.36s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   2%|▏         | 12/625 [15:15<13:24:20, 78.73s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   2%|▏         | 13/625 [16:36<13:28:13, 79.24s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   2%|▏         | 14/625 [17:54<13:23:43, 78.93s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   2%|▏         | 15/625 [19:12<13:20:35, 78.75s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   3%|▎         | 16/625 [20:31<13:20:17, 78.85s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   3%|▎         | 17/625 [21:50<13:19:32, 78.90s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   3%|▎         | 18/625 [23:09<13:16:20, 78.72s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   3%|▎         | 19/625 [24:25<13:08:44, 78.09s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   3%|▎         | 20/625 [25:44<13:08:11, 78.17s/it, IM_loss=0.0408, MFIF_loss=1.0636, LR=1.00e-04][A
+Epoch 1/40:   3%|▎         | 20/625 [27:03<13:08:11, 78.17s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   3%|▎         | 21/625 [27:03<13:10:31, 78.53s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   4%|▎         | 22/625 [28:23<13:12:44, 78.88s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   4%|▎         | 23/625 [29:41<13:09:03, 78.64s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   4%|▍         | 24/625 [31:01<13:11:26, 79.01s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   4%|▍         | 25/625 [32:20<13:12:09, 79.22s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   4%|▍         | 26/625 [33:41<13:13:24, 79.47s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   4%|▍         | 27/625 [34:59<13:09:21, 79.20s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   4%|▍         | 28/625 [36:18<13:06:53, 79.08s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   5%|▍         | 29/625 [37:38<13:08:29, 79.38s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   5%|▍         | 30/625 [38:59<13:11:16, 79.79s/it, IM_loss=0.0334, MFIF_loss=0.5177, LR=1.00e-04][A
+Epoch 1/40:   5%|▍         | 30/625 [40:19<13:11:16, 79.79s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   5%|▍         | 31/625 [40:19<13:10:12, 79.82s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   5%|▌         | 32/625 [41:36<13:02:05, 79.13s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   5%|▌         | 33/625 [42:56<13:03:32, 79.41s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   5%|▌         | 34/625 [44:16<13:02:44, 79.47s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   6%|▌         | 35/625 [45:36<13:03:33, 79.68s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   6%|▌         | 36/625 [46:54<12:57:41, 79.22s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   6%|▌         | 37/625 [48:13<12:54:04, 78.99s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   6%|▌         | 38/625 [49:32<12:53:51, 79.10s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   6%|▌         | 39/625 [50:52<12:56:20, 79.49s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   6%|▋         | 40/625 [52:12<12:55:14, 79.51s/it, IM_loss=0.0208, MFIF_loss=0.2574, LR=1.00e-04][A
+Epoch 1/40:   6%|▋         | 40/625 [53:29<12:55:14, 79.51s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   7%|▋         | 41/625 [53:29<12:48:05, 78.91s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   7%|▋         | 42/625 [54:49<12:47:34, 79.00s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   7%|▋         | 43/625 [56:09<12:51:20, 79.52s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   7%|▋         | 44/625 [57:29<12:49:17, 79.45s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   7%|▋         | 45/625 [58:47<12:44:02, 79.04s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   7%|▋         | 46/625 [1:00:05<12:39:44, 78.73s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 47/625 [1:01:24<12:41:16, 79.02s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 48/625 [1:02:43<12:39:23, 78.97s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 49/625 [1:04:01<12:34:40, 78.61s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 50/625 [1:05:21<12:35:51, 78.87s/it, IM_loss=0.0089, MFIF_loss=0.2816, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 50/625 [1:06:39<12:35:51, 78.87s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 51/625 [1:06:39<12:33:18, 78.74s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 52/625 [1:07:59<12:35:54, 79.15s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   8%|▊         | 53/625 [1:09:18<12:33:20, 79.02s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   9%|▊         | 54/625 [1:10:34<12:25:20, 78.32s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   9%|▉         | 55/625 [1:11:54<12:27:17, 78.66s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   9%|▉         | 56/625 [1:13:15<12:32:20, 79.33s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   9%|▉         | 57/625 [1:14:34<12:29:38, 79.19s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   9%|▉         | 58/625 [1:15:52<12:26:35, 79.00s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:   9%|▉         | 59/625 [1:17:11<12:23:22, 78.80s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:  10%|▉         | 60/625 [1:18:30<12:25:09, 79.13s/it, IM_loss=0.0097, MFIF_loss=0.2225, LR=1.00e-04][A
+Epoch 1/40:  10%|▉         | 60/625 [1:19:49<12:25:09, 79.13s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  10%|▉         | 61/625 [1:19:49<12:22:04, 78.94s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  10%|▉         | 62/625 [1:21:09<12:24:07, 79.30s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  10%|█         | 63/625 [1:22:27<12:18:07, 78.80s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  10%|█         | 64/625 [1:23:46<12:16:51, 78.81s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  10%|█         | 65/625 [1:25:05<12:17:38, 79.03s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  11%|█         | 66/625 [1:26:24<12:15:57, 78.99s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  11%|█         | 67/625 [1:27:41<12:09:37, 78.45s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  11%|█         | 68/625 [1:29:00<12:10:09, 78.65s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  11%|█         | 69/625 [1:30:20<12:12:14, 79.02s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  11%|█         | 70/625 [1:31:39<12:10:58, 79.02s/it, IM_loss=0.0083, MFIF_loss=0.2635, LR=1.00e-04][A
+Epoch 1/40:  11%|█         | 70/625 [1:32:57<12:10:58, 79.02s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  11%|█▏        | 71/625 [1:32:57<12:05:42, 78.60s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  12%|█▏        | 72/625 [1:34:15<12:01:57, 78.33s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  12%|█▏        | 73/625 [1:35:34<12:04:43, 78.77s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  12%|█▏        | 74/625 [1:36:53<12:02:45, 78.70s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  12%|█▏        | 75/625 [1:38:11<11:58:43, 78.41s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  12%|█▏        | 76/625 [1:39:29<11:56:05, 78.26s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  12%|█▏        | 77/625 [1:40:49<12:00:42, 78.91s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  12%|█▏        | 78/625 [1:42:08<11:58:59, 78.87s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  13%|█▎        | 79/625 [1:43:26<11:57:15, 78.82s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  13%|█▎        | 80/625 [1:44:44<11:51:50, 78.37s/it, IM_loss=0.0120, MFIF_loss=0.1642, LR=1.00e-04][A
+Epoch 1/40:  13%|█▎        | 80/625 [1:46:02<11:51:50, 78.37s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  13%|█▎        | 81/625 [1:46:02<11:50:43, 78.39s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  13%|█▎        | 82/625 [1:47:22<11:52:31, 78.73s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  13%|█▎        | 83/625 [1:48:41<11:52:13, 78.84s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  13%|█▎        | 84/625 [1:49:58<11:46:58, 78.41s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  14%|█▎        | 85/625 [1:51:17<11:45:18, 78.37s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  14%|█▍        | 86/625 [1:52:36<11:46:54, 78.69s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  14%|█▍        | 87/625 [1:53:55<11:46:22, 78.78s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  14%|█▍        | 88/625 [1:55:14<11:44:53, 78.76s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  14%|█▍        | 89/625 [1:56:31<11:40:01, 78.36s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  14%|█▍        | 90/625 [1:57:50<11:40:40, 78.58s/it, IM_loss=0.0118, MFIF_loss=0.1732, LR=1.00e-04][A
+Epoch 1/40:  14%|█▍        | 90/625 [1:59:09<11:40:40, 78.58s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  15%|█▍        | 91/625 [1:59:09<11:40:57, 78.76s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  15%|█▍        | 92/625 [2:00:29<11:42:10, 79.04s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  15%|█▍        | 93/625 [2:01:48<11:39:40, 78.91s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  15%|█▌        | 94/625 [2:03:06<11:38:08, 78.89s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  15%|█▌        | 95/625 [2:04:27<11:41:09, 79.38s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  15%|█▌        | 96/625 [2:05:46<11:38:11, 79.19s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  16%|█▌        | 97/625 [2:07:04<11:33:11, 78.77s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  16%|█▌        | 98/625 [2:08:22<11:30:53, 78.66s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  16%|█▌        | 99/625 [2:09:41<11:31:28, 78.88s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  16%|█▌        | 100/625 [2:11:01<11:31:25, 79.02s/it, IM_loss=0.0045, MFIF_loss=0.1180, LR=1.00e-04][A
+Epoch 1/40:  16%|█▌        | 100/625 [2:12:19<11:31:25, 79.02s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  16%|█▌        | 101/625 [2:12:19<11:29:21, 78.93s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  16%|█▋        | 102/625 [2:13:38<11:26:19, 78.74s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  16%|█▋        | 103/625 [2:14:58<11:29:32, 79.26s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  17%|█▋        | 104/625 [2:16:18<11:30:23, 79.51s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  17%|█▋        | 105/625 [2:17:38<11:28:52, 79.49s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  17%|█▋        | 106/625 [2:18:55<11:21:06, 78.74s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  17%|█▋        | 107/625 [2:20:15<11:23:23, 79.16s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  17%|█▋        | 108/625 [2:21:34<11:21:52, 79.13s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  17%|█▋        | 109/625 [2:22:53<11:19:58, 79.07s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  18%|█▊        | 110/625 [2:24:11<11:16:04, 78.77s/it, IM_loss=0.0236, MFIF_loss=0.0874, LR=1.00e-04][A
+Epoch 1/40:  18%|█▊        | 110/625 [2:25:29<11:16:04, 78.77s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  18%|█▊        | 111/625 [2:25:29<11:13:18, 78.60s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  18%|█▊        | 112/625 [2:26:49<11:14:12, 78.86s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  18%|█▊        | 113/625 [2:28:07<11:11:50, 78.73s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  18%|█▊        | 114/625 [2:29:24<11:06:43, 78.29s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  18%|█▊        | 115/625 [2:30:42<11:03:27, 78.05s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  19%|█▊        | 116/625 [2:32:02<11:08:05, 78.75s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  19%|█▊        | 117/625 [2:33:22<11:08:47, 78.99s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  19%|█▉        | 118/625 [2:34:41<11:09:05, 79.18s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  19%|█▉        | 119/625 [2:35:58<11:02:27, 78.55s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  19%|█▉        | 120/625 [2:37:29<11:30:25, 82.03s/it, IM_loss=0.0095, MFIF_loss=0.0819, LR=1.00e-04][A
+Epoch 1/40:  19%|█▉        | 120/625 [2:38:52<11:30:25, 82.03s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  19%|█▉        | 121/625 [2:38:52<11:31:55, 82.37s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  20%|█▉        | 122/625 [2:40:12<11:24:33, 81.66s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  20%|█▉        | 123/625 [2:41:30<11:16:00, 80.80s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  20%|█▉        | 124/625 [2:42:48<11:07:34, 79.95s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  20%|██        | 125/625 [2:44:07<11:02:01, 79.44s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  20%|██        | 126/625 [2:45:27<11:01:48, 79.58s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  20%|██        | 127/625 [2:46:46<11:00:56, 79.63s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  20%|██        | 128/625 [2:48:03<10:53:06, 78.85s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  21%|██        | 129/625 [2:49:22<10:51:03, 78.76s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  21%|██        | 130/625 [2:50:41<10:49:50, 78.77s/it, IM_loss=0.0158, MFIF_loss=0.0645, LR=1.00e-04][A
+Epoch 1/40:  21%|██        | 130/625 [2:52:00<10:49:50, 78.77s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  21%|██        | 131/625 [2:52:00<10:49:02, 78.83s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  21%|██        | 132/625 [2:53:18<10:46:24, 78.67s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  21%|██▏       | 133/625 [2:54:37<10:44:55, 78.65s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  21%|██▏       | 134/625 [2:55:56<10:44:19, 78.74s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  22%|██▏       | 135/625 [2:57:16<10:46:25, 79.16s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  22%|██▏       | 136/625 [2:58:34<10:44:16, 79.05s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  22%|██▏       | 137/625 [2:59:52<10:39:18, 78.60s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  22%|██▏       | 138/625 [3:01:12<10:40:23, 78.90s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  22%|██▏       | 139/625 [3:02:31<10:39:35, 78.96s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  22%|██▏       | 140/625 [3:03:50<10:39:47, 79.15s/it, IM_loss=0.0259, MFIF_loss=0.0580, LR=1.00e-04][A
+Epoch 1/40:  22%|██▏       | 140/625 [3:05:07<10:39:47, 79.15s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  23%|██▎       | 141/625 [3:05:07<10:32:43, 78.44s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  23%|██▎       | 142/625 [3:06:26<10:33:34, 78.71s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  23%|██▎       | 143/625 [3:07:46<10:34:33, 78.99s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  23%|██▎       | 144/625 [3:09:05<10:32:41, 78.92s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  23%|██▎       | 145/625 [3:10:23<10:30:33, 78.82s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  23%|██▎       | 146/625 [3:11:42<10:28:12, 78.69s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  24%|██▎       | 147/625 [3:13:01<10:28:15, 78.86s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  24%|██▎       | 148/625 [3:14:21<10:30:07, 79.26s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  24%|██▍       | 149/625 [3:15:40<10:28:40, 79.25s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  24%|██▍       | 150/625 [3:16:58<10:24:25, 78.88s/it, IM_loss=0.0264, MFIF_loss=0.1077, LR=1.00e-04][A
+Epoch 1/40:  24%|██▍       | 150/625 [3:18:17<10:24:25, 78.88s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  24%|██▍       | 151/625 [3:18:17<10:22:39, 78.82s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  24%|██▍       | 152/625 [3:19:37<10:23:53, 79.14s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  24%|██▍       | 153/625 [3:20:55<10:19:56, 78.81s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  25%|██▍       | 154/625 [3:22:14<10:18:53, 78.84s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  25%|██▍       | 155/625 [3:23:33<10:17:09, 78.79s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  25%|██▍       | 156/625 [3:24:53<10:18:43, 79.15s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  25%|██▌       | 157/625 [3:26:12<10:18:43, 79.32s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  25%|██▌       | 158/625 [3:27:31<10:16:08, 79.16s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  25%|██▌       | 159/625 [3:28:48<10:10:03, 78.55s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  26%|██▌       | 160/625 [3:30:08<10:11:36, 78.92s/it, IM_loss=0.0310, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  26%|██▌       | 160/625 [3:31:28<10:11:36, 78.92s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  26%|██▌       | 161/625 [3:31:28<10:12:22, 79.19s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  26%|██▌       | 162/625 [3:32:47<10:11:24, 79.23s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  26%|██▌       | 163/625 [3:34:05<10:06:54, 78.82s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  26%|██▌       | 164/625 [3:35:24<10:04:47, 78.71s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  26%|██▋       | 165/625 [3:36:44<10:06:33, 79.12s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  27%|██▋       | 166/625 [3:38:02<10:03:45, 78.92s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  27%|██▋       | 167/625 [3:39:20<10:00:33, 78.67s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  27%|██▋       | 168/625 [3:40:39<9:59:04, 78.65s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04] [A
+Epoch 1/40:  27%|██▋       | 169/625 [3:41:58<9:58:21, 78.73s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  27%|██▋       | 170/625 [3:43:17<9:59:25, 79.04s/it, IM_loss=0.0071, MFIF_loss=0.0394, LR=1.00e-04][A
+Epoch 1/40:  27%|██▋       | 170/625 [3:44:36<9:59:25, 79.04s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  27%|██▋       | 171/625 [3:44:36<9:58:03, 79.04s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  28%|██▊       | 172/625 [3:45:53<9:51:44, 78.38s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  28%|██▊       | 173/625 [3:47:13<9:54:07, 78.87s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  28%|██▊       | 174/625 [3:48:32<9:52:00, 78.76s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  28%|██▊       | 175/625 [3:49:50<9:49:15, 78.57s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  28%|██▊       | 176/625 [3:51:08<9:45:39, 78.26s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  28%|██▊       | 177/625 [3:52:27<9:47:14, 78.65s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  28%|██▊       | 178/625 [3:53:47<9:48:42, 79.02s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  29%|██▊       | 179/625 [3:55:06<9:48:21, 79.15s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  29%|██▉       | 180/625 [3:56:25<9:46:09, 79.03s/it, IM_loss=0.0179, MFIF_loss=0.0768, LR=1.00e-04][A
+Epoch 1/40:  29%|██▉       | 180/625 [3:57:43<9:46:09, 79.03s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  29%|██▉       | 181/625 [3:57:43<9:42:24, 78.70s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  29%|██▉       | 182/625 [3:59:03<9:44:23, 79.15s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  29%|██▉       | 183/625 [4:00:22<9:42:56, 79.13s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  29%|██▉       | 184/625 [4:01:42<9:42:40, 79.28s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  30%|██▉       | 185/625 [4:02:59<9:36:49, 78.66s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  30%|██▉       | 186/625 [4:04:19<9:38:13, 79.03s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  30%|██▉       | 187/625 [4:05:38<9:36:40, 79.00s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  30%|███       | 188/625 [4:06:58<9:37:41, 79.32s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  30%|███       | 189/625 [4:08:15<9:31:48, 78.69s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  30%|███       | 190/625 [4:09:35<9:32:27, 78.96s/it, IM_loss=0.0114, MFIF_loss=0.0717, LR=1.00e-04][A
+Epoch 1/40:  30%|███       | 190/625 [4:10:53<9:32:27, 78.96s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  31%|███       | 191/625 [4:10:53<9:30:10, 78.83s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  31%|███       | 192/625 [4:12:12<9:27:21, 78.62s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  31%|███       | 193/625 [4:13:30<9:25:08, 78.49s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  31%|███       | 194/625 [4:14:47<9:20:25, 78.02s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  31%|███       | 195/625 [4:16:06<9:22:53, 78.54s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  31%|███▏      | 196/625 [4:17:26<9:24:51, 79.00s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 197/625 [4:18:46<9:23:55, 79.06s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 198/625 [4:20:02<9:17:22, 78.32s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 199/625 [4:21:22<9:18:05, 78.61s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 200/625 [4:22:42<9:20:05, 79.07s/it, IM_loss=0.0192, MFIF_loss=0.0612, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 200/625 [4:24:02<9:20:05, 79.07s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 201/625 [4:24:02<9:21:01, 79.39s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 202/625 [4:25:19<9:15:29, 78.79s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  32%|███▏      | 203/625 [4:26:39<9:16:37, 79.14s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  33%|███▎      | 204/625 [4:27:59<9:15:51, 79.22s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  33%|███▎      | 205/625 [4:29:17<9:13:42, 79.10s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  33%|███▎      | 206/625 [4:30:36<9:10:58, 78.90s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  33%|███▎      | 207/625 [4:31:54<9:08:30, 78.73s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  33%|███▎      | 208/625 [4:33:13<9:07:43, 78.81s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  33%|███▎      | 209/625 [4:34:33<9:08:01, 79.04s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  34%|███▎      | 210/625 [4:35:53<9:09:22, 79.43s/it, IM_loss=0.0080, MFIF_loss=0.0408, LR=1.00e-04][A
+Epoch 1/40:  34%|███▎      | 210/625 [4:37:10<9:09:22, 79.43s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  34%|███▍      | 211/625 [4:37:10<9:02:07, 78.57s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  34%|███▍      | 212/625 [4:38:29<9:03:24, 78.94s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  34%|███▍      | 213/625 [4:39:49<9:02:38, 79.03s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  34%|███▍      | 214/625 [4:41:08<9:02:12, 79.15s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  34%|███▍      | 215/625 [4:42:25<8:56:40, 78.54s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  35%|███▍      | 216/625 [4:43:44<8:56:48, 78.75s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  35%|███▍      | 217/625 [4:45:04<8:56:05, 78.84s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  35%|███▍      | 218/625 [4:46:23<8:56:03, 79.03s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  35%|███▌      | 219/625 [4:47:41<8:52:20, 78.67s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  35%|███▌      | 220/625 [4:48:59<8:50:54, 78.65s/it, IM_loss=0.0215, MFIF_loss=0.0402, LR=1.00e-04][A
+Epoch 1/40:  35%|███▌      | 220/625 [4:50:18<8:50:54, 78.65s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  35%|███▌      | 221/625 [4:50:18<8:49:59, 78.71s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  36%|███▌      | 222/625 [4:51:38<8:50:44, 79.02s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  36%|███▌      | 223/625 [4:52:59<8:52:41, 79.51s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  36%|███▌      | 224/625 [4:54:16<8:46:29, 78.78s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  36%|███▌      | 225/625 [4:55:35<8:45:53, 78.88s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  36%|███▌      | 226/625 [4:56:55<8:47:12, 79.28s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  36%|███▋      | 227/625 [4:58:14<8:45:51, 79.28s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  36%|███▋      | 228/625 [4:59:31<8:40:12, 78.62s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  37%|███▋      | 229/625 [5:00:51<8:39:49, 78.76s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  37%|███▋      | 230/625 [5:02:09<8:38:40, 78.79s/it, IM_loss=0.0127, MFIF_loss=0.0565, LR=1.00e-04][A
+Epoch 1/40:  37%|███▋      | 230/625 [5:03:30<8:38:40, 78.79s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  37%|███▋      | 231/625 [5:03:30<8:40:39, 79.29s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  37%|███▋      | 232/625 [5:04:48<8:36:58, 78.93s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  37%|███▋      | 233/625 [5:06:06<8:34:13, 78.71s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  37%|███▋      | 234/625 [5:07:25<8:33:07, 78.74s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  38%|███▊      | 235/625 [5:08:44<8:31:56, 78.76s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  38%|███▊      | 236/625 [5:10:02<8:30:27, 78.73s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  38%|███▊      | 237/625 [5:11:19<8:24:21, 77.99s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  38%|███▊      | 238/625 [5:12:39<8:26:35, 78.54s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  38%|███▊      | 239/625 [5:13:58<8:26:09, 78.68s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  38%|███▊      | 240/625 [5:15:17<8:25:36, 78.80s/it, IM_loss=0.0100, MFIF_loss=0.0562, LR=1.00e-04][A
+Epoch 1/40:  38%|███▊      | 240/625 [5:16:33<8:25:36, 78.80s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  39%|███▊      | 241/625 [5:16:33<8:19:59, 78.12s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  39%|███▊      | 242/625 [5:17:53<8:21:17, 78.53s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  39%|███▉      | 243/625 [5:19:13<8:22:36, 78.94s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  39%|███▉      | 244/625 [5:20:32<8:22:07, 79.07s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  39%|███▉      | 245/625 [5:21:49<8:17:27, 78.55s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  39%|███▉      | 246/625 [5:23:08<8:16:58, 78.68s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  40%|███▉      | 247/625 [5:24:26<8:14:46, 78.54s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  40%|███▉      | 248/625 [5:25:45<8:14:21, 78.68s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  40%|███▉      | 249/625 [5:27:04<8:12:37, 78.61s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  40%|████      | 250/625 [5:28:21<8:09:19, 78.29s/it, IM_loss=0.0122, MFIF_loss=0.0437, LR=1.00e-04][A
+Epoch 1/40:  40%|████      | 250/625 [5:29:40<8:09:19, 78.29s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  40%|████      | 251/625 [5:29:40<8:09:08, 78.47s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  40%|████      | 252/625 [5:30:59<8:08:00, 78.50s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  40%|████      | 253/625 [5:32:18<8:07:45, 78.67s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  41%|████      | 254/625 [5:33:34<8:01:30, 77.87s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  41%|████      | 255/625 [5:34:53<8:02:33, 78.25s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  41%|████      | 256/625 [5:36:13<8:04:21, 78.76s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  41%|████      | 257/625 [5:37:33<8:04:44, 79.03s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  41%|████▏     | 258/625 [5:38:49<7:58:14, 78.19s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  41%|████▏     | 259/625 [5:40:08<7:59:04, 78.54s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  42%|████▏     | 260/625 [5:41:28<7:59:58, 78.90s/it, IM_loss=0.0038, MFIF_loss=0.0340, LR=1.00e-04][A
+Epoch 1/40:  42%|████▏     | 260/625 [5:42:46<7:59:58, 78.90s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  42%|████▏     | 261/625 [5:42:46<7:57:43, 78.75s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  42%|████▏     | 262/625 [5:44:05<7:55:17, 78.56s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  42%|████▏     | 263/625 [5:45:23<7:52:55, 78.39s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  42%|████▏     | 264/625 [5:46:42<7:53:48, 78.75s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  42%|████▏     | 265/625 [5:48:01<7:53:11, 78.87s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  43%|████▎     | 266/625 [5:49:20<7:50:59, 78.72s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  43%|████▎     | 267/625 [5:50:37<7:46:59, 78.27s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  43%|████▎     | 268/625 [5:51:56<7:47:44, 78.61s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  43%|████▎     | 269/625 [5:53:16<7:49:06, 79.06s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  43%|████▎     | 270/625 [5:54:36<7:49:34, 79.37s/it, IM_loss=0.0385, MFIF_loss=0.0429, LR=1.00e-04][A
+Epoch 1/40:  43%|████▎     | 270/625 [5:55:53<7:49:34, 79.37s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  43%|████▎     | 271/625 [5:55:53<7:43:54, 78.63s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  44%|████▎     | 272/625 [5:57:13<7:45:17, 79.09s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  44%|████▎     | 273/625 [5:58:33<7:45:19, 79.32s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  44%|████▍     | 274/625 [5:59:52<7:43:41, 79.26s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  44%|████▍     | 275/625 [6:01:11<7:40:28, 78.94s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  44%|████▍     | 276/625 [6:02:30<7:39:01, 78.91s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  44%|████▍     | 277/625 [6:03:49<7:38:36, 79.07s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  44%|████▍     | 278/625 [6:05:08<7:36:45, 78.98s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  45%|████▍     | 279/625 [6:06:26<7:34:39, 78.84s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  45%|████▍     | 280/625 [6:07:44<7:31:41, 78.56s/it, IM_loss=0.0088, MFIF_loss=0.0368, LR=1.00e-04][A
+Epoch 1/40:  45%|████▍     | 280/625 [6:09:04<7:31:41, 78.56s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  45%|████▍     | 281/625 [6:09:04<7:32:41, 78.96s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  45%|████▌     | 282/625 [6:10:23<7:30:36, 78.83s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  45%|████▌     | 283/625 [6:11:42<7:30:28, 79.03s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  45%|████▌     | 284/625 [6:12:59<7:24:58, 78.29s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  46%|████▌     | 285/625 [6:14:18<7:26:06, 78.73s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  46%|████▌     | 286/625 [6:15:37<7:24:59, 78.76s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  46%|████▌     | 287/625 [6:16:56<7:23:44, 78.77s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  46%|████▌     | 288/625 [6:18:12<7:18:17, 78.03s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  46%|████▌     | 289/625 [6:19:31<7:18:28, 78.30s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  46%|████▋     | 290/625 [6:20:52<7:20:32, 78.90s/it, IM_loss=0.0101, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  46%|████▋     | 290/625 [6:22:10<7:20:32, 78.90s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  47%|████▋     | 291/625 [6:22:10<7:18:49, 78.83s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  47%|████▋     | 292/625 [6:23:28<7:15:23, 78.45s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  47%|████▋     | 293/625 [6:24:46<7:13:15, 78.30s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  47%|████▋     | 294/625 [6:26:05<7:13:49, 78.64s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  47%|████▋     | 295/625 [6:27:24<7:13:29, 78.82s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  47%|████▋     | 296/625 [6:28:43<7:11:48, 78.75s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 297/625 [6:30:00<7:07:34, 78.22s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 298/625 [6:31:19<7:07:42, 78.48s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 299/625 [6:32:37<7:05:58, 78.40s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 300/625 [6:33:56<7:05:37, 78.58s/it, IM_loss=0.0086, MFIF_loss=0.0404, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 300/625 [6:35:13<7:05:37, 78.58s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 301/625 [6:35:13<7:01:01, 77.97s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 302/625 [6:36:32<7:01:38, 78.32s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  48%|████▊     | 303/625 [6:37:52<7:03:10, 78.85s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  49%|████▊     | 304/625 [6:39:11<7:02:03, 78.89s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  49%|████▉     | 305/625 [6:40:28<6:58:26, 78.46s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  49%|████▉     | 306/625 [6:41:47<6:56:36, 78.36s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  49%|████▉     | 307/625 [6:43:05<6:55:18, 78.36s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  49%|████▉     | 308/625 [6:44:23<6:54:04, 78.37s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  49%|████▉     | 309/625 [6:45:41<6:52:10, 78.26s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  50%|████▉     | 310/625 [6:46:59<6:50:01, 78.10s/it, IM_loss=0.0051, MFIF_loss=0.0376, LR=1.00e-04][A
+Epoch 1/40:  50%|████▉     | 310/625 [6:48:18<6:50:01, 78.10s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  50%|████▉     | 311/625 [6:48:18<6:50:16, 78.40s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  50%|████▉     | 312/625 [6:49:37<6:49:11, 78.44s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  50%|█████     | 313/625 [6:50:55<6:47:26, 78.35s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  50%|█████     | 314/625 [6:52:14<6:47:02, 78.53s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  50%|█████     | 315/625 [6:53:32<6:45:55, 78.57s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  51%|█████     | 316/625 [6:54:52<6:45:56, 78.82s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  51%|█████     | 317/625 [6:56:10<6:43:30, 78.60s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  51%|█████     | 318/625 [6:57:26<6:38:50, 77.95s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  51%|█████     | 319/625 [6:58:44<6:37:17, 77.90s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  51%|█████     | 320/625 [7:00:04<6:38:58, 78.49s/it, IM_loss=0.0106, MFIF_loss=0.0452, LR=1.00e-04][A
+Epoch 1/40:  51%|█████     | 320/625 [7:01:22<6:38:58, 78.49s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  51%|█████▏    | 321/625 [7:01:22<6:37:32, 78.46s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  52%|█████▏    | 322/625 [7:02:38<6:31:44, 77.57s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  52%|█████▏    | 323/625 [7:03:56<6:31:33, 77.79s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  52%|█████▏    | 324/625 [7:05:15<6:32:16, 78.19s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  52%|█████▏    | 325/625 [7:06:35<6:32:59, 78.60s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  52%|█████▏    | 326/625 [7:07:52<6:30:03, 78.27s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  52%|█████▏    | 327/625 [7:09:11<6:28:38, 78.25s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  52%|█████▏    | 328/625 [7:10:30<6:29:15, 78.64s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  53%|█████▎    | 329/625 [7:11:49<6:28:00, 78.65s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  53%|█████▎    | 330/625 [7:13:06<6:25:13, 78.35s/it, IM_loss=0.0137, MFIF_loss=0.0371, LR=1.00e-04][A
+Epoch 1/40:  53%|█████▎    | 330/625 [7:14:24<6:25:13, 78.35s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  53%|█████▎    | 331/625 [7:14:24<6:23:19, 78.23s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  53%|█████▎    | 332/625 [7:15:42<6:21:22, 78.10s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  53%|█████▎    | 333/625 [7:17:02<6:22:02, 78.50s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  53%|█████▎    | 334/625 [7:18:19<6:18:18, 78.00s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  54%|█████▎    | 335/625 [7:19:35<6:14:55, 77.57s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  54%|█████▍    | 336/625 [7:20:53<6:13:34, 77.56s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  54%|█████▍    | 337/625 [7:22:12<6:14:37, 78.05s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  54%|█████▍    | 338/625 [7:23:30<6:14:13, 78.23s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  54%|█████▍    | 339/625 [7:24:46<6:09:19, 77.48s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  54%|█████▍    | 340/625 [7:26:04<6:08:52, 77.66s/it, IM_loss=0.0170, MFIF_loss=0.0378, LR=1.00e-04][A
+Epoch 1/40:  54%|█████▍    | 340/625 [7:27:22<6:08:52, 77.66s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  55%|█████▍    | 341/625 [7:27:22<6:07:28, 77.64s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  55%|█████▍    | 342/625 [7:28:40<6:07:14, 77.86s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  55%|█████▍    | 343/625 [7:29:56<6:03:34, 77.36s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  55%|█████▌    | 344/625 [7:31:15<6:03:28, 77.61s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  55%|█████▌    | 345/625 [7:32:32<6:01:24, 77.44s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  55%|█████▌    | 346/625 [7:33:50<6:01:50, 77.81s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▌    | 347/625 [7:35:07<5:58:48, 77.44s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▌    | 348/625 [7:36:25<5:59:00, 77.76s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▌    | 349/625 [7:37:44<5:58:37, 77.96s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▌    | 350/625 [7:39:02<5:57:02, 77.90s/it, IM_loss=0.0084, MFIF_loss=0.0357, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▌    | 350/625 [7:40:17<5:57:02, 77.90s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▌    | 351/625 [7:40:17<5:52:46, 77.25s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▋    | 352/625 [7:41:35<5:51:41, 77.29s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  56%|█████▋    | 353/625 [7:42:54<5:52:27, 77.75s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  57%|█████▋    | 354/625 [7:44:12<5:51:37, 77.85s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  57%|█████▋    | 355/625 [7:45:29<5:49:18, 77.62s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  57%|█████▋    | 356/625 [7:46:46<5:47:19, 77.47s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  57%|█████▋    | 357/625 [7:48:04<5:47:11, 77.73s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  57%|█████▋    | 358/625 [7:49:21<5:45:16, 77.59s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  57%|█████▋    | 359/625 [7:50:39<5:44:10, 77.63s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  58%|█████▊    | 360/625 [7:51:56<5:42:19, 77.51s/it, IM_loss=0.0071, MFIF_loss=0.0372, LR=1.00e-04][A
+Epoch 1/40:  58%|█████▊    | 360/625 [7:53:15<5:42:19, 77.51s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  58%|█████▊    | 361/625 [7:53:15<5:42:00, 77.73s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  58%|█████▊    | 362/625 [7:54:34<5:42:47, 78.20s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  58%|█████▊    | 363/625 [7:55:51<5:40:21, 77.94s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  58%|█████▊    | 364/625 [7:57:08<5:37:56, 77.69s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  58%|█████▊    | 365/625 [7:58:26<5:37:11, 77.82s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  59%|█████▊    | 366/625 [7:59:46<5:37:32, 78.19s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  59%|█████▊    | 367/625 [8:01:03<5:35:48, 78.10s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  59%|█████▉    | 368/625 [8:02:19<5:31:50, 77.47s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  59%|█████▉    | 369/625 [8:03:38<5:31:27, 77.68s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  59%|█████▉    | 370/625 [8:04:57<5:32:40, 78.28s/it, IM_loss=0.0210, MFIF_loss=0.0295, LR=1.00e-04][A
+Epoch 1/40:  59%|█████▉    | 370/625 [8:06:16<5:32:40, 78.28s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  59%|█████▉    | 371/625 [8:06:16<5:31:39, 78.34s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  60%|█████▉    | 372/625 [8:07:34<5:30:01, 78.27s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  60%|█████▉    | 373/625 [8:08:52<5:29:02, 78.34s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  60%|█████▉    | 374/625 [8:10:11<5:27:41, 78.33s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  60%|██████    | 375/625 [8:11:30<5:27:24, 78.58s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  60%|██████    | 376/625 [8:12:47<5:23:57, 78.06s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  60%|██████    | 377/625 [8:14:05<5:22:55, 78.13s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  60%|██████    | 378/625 [8:15:23<5:21:00, 77.98s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  61%|██████    | 379/625 [8:16:41<5:20:20, 78.13s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  61%|██████    | 380/625 [8:17:58<5:17:00, 77.64s/it, IM_loss=0.0113, MFIF_loss=0.0261, LR=1.00e-04][A
+Epoch 1/40:  61%|██████    | 380/625 [8:19:16<5:17:00, 77.64s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  61%|██████    | 381/625 [8:19:16<5:17:08, 77.98s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  61%|██████    | 382/625 [8:20:36<5:18:16, 78.59s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  61%|██████▏   | 383/625 [8:21:59<5:21:21, 79.67s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  61%|██████▏   | 384/625 [8:23:18<5:19:59, 79.67s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  62%|██████▏   | 385/625 [8:24:35<5:14:57, 78.74s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  62%|██████▏   | 386/625 [8:25:52<5:12:04, 78.35s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  62%|██████▏   | 387/625 [8:27:10<5:10:24, 78.25s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  62%|██████▏   | 388/625 [8:28:26<5:05:56, 77.45s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  62%|██████▏   | 389/625 [8:29:43<5:03:43, 77.22s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  62%|██████▏   | 390/625 [8:31:00<5:02:56, 77.35s/it, IM_loss=0.0094, MFIF_loss=0.0396, LR=1.00e-04][A
+Epoch 1/40:  62%|██████▏   | 390/625 [8:32:16<5:02:56, 77.35s/it, IM_loss=0.0161, MFIF_loss=0.0366, LR=1.00e-04][A
+Epoch 1/40:  63%|██████▎   | 391/625 [8:32:16<5:00:00, 76.93s/it, IM_loss=0.0161, MFIF_loss=0.0366, LR=1.00e-04][A
+Epoch 1/40:  63%|██████▎   | 392/625 [8:33:32<4:57:41, 76.66s/it, IM_loss=0.0161, MFIF_loss=0.0366, LR=1.00e-04][A
+Epoch 1/40:  63%|██████▎   | 393/625 [8:34:50<4:57:34, 76.96s/it, IM_loss=0.0161, MFIF_loss=0.0366, LR=1.00e-04][A
+Epoch 1/40:  63%|██████▎   | 394/625 [8:36:06<4:55:36, 76.78s/it, IM_loss=0.0161, MFIF_loss=0.0366, LR=1.00e-04][A
+Epoch 1/40:  63%|██████▎   | 395/625 [8:37:24<4:55:57, 77.21s/it, IM_loss=0.0161, MFIF_loss=0.0366, LR=1.00e-04][A
+Epoch 1/40:  63%|██████▎   | 396/625 [8:38:41<4:53:31, 76.90s/it, IM_loss=0.0161, MFIF_loss=0.0366, LR=1.00e-04][A

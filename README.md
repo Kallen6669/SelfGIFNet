@@ -6,6 +6,8 @@
 <img width="20" src="images/dataset1.png"> Training Set
 - [Baidu Drive (code: x2i6)](https://pan.baidu.com/s/16lCjucwC476dFuxtfFbP3g?pwd=x2i6)
 
+#### 训练代码
+`python train.py --trainDataRoot ./train_data`
 
 #### 遇到的问题
 1. 

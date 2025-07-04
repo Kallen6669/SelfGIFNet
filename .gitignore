@@ -2,3 +2,8 @@
 /train_data/infrared
 /train_data/visible_focus_near
 /train_data/visible_focus_far
+
+question.md
+train_fixed.py
+train_optimized.py
+/img
