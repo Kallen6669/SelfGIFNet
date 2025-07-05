@@ -48,6 +48,16 @@ def run(model, ir_test_batch, vis_test_batch, output_path, img_name):
     img_ir = ir_test_batch
     img_vi = vis_test_batch
 
+    # 添加维度检查
+    print(f"Input IR shape: {img_ir.shape}")
+    print(f"Input VIS shape: {img_vi.shape}")
+    
+    # 确保输入是4维张量
+    if img_ir.ndim != 4:
+        raise ValueError(f"Expected 4D tensor for IR, got {img_ir.ndim}D")
+    if img_vi.ndim != 4:
+        raise ValueError(f"Expected 4D tensor for VIS, got {img_vi.ndim}D")
+
     #print(img_ir.dtype)
     #print(img_vi.dtype)
     fea_com = model.forward_encoder(img_ir, img_vi)    
@@ -169,13 +179,23 @@ def main():
             ir_img = jt.array(ir_img).float32() / 255.0
             vis_img = jt.array(vis_img).float32() / 255.0        
             
+            # 确保张量是4维的 (batch_size, channels, height, width)
+            if ir_img.ndim == 2:
+                ir_img = ir_img.unsqueeze(0).unsqueeze(0)  # (H, W) -> (1, 1, H, W)
+            elif ir_img.ndim == 3:
+                ir_img = ir_img.unsqueeze(0)  # (C, H, W) -> (1, C, H, W)
+
+            if vis_img.ndim == 2:
+                vis_img = vis_img.unsqueeze(0).unsqueeze(0)  # (H, W) -> (1, 1, H, W)
+            elif vis_img.ndim == 3:
+                vis_img = vis_img.unsqueeze(0)  # (C, H, W) -> (1, C, H, W)
+
+            ir_test_batch = ir_img.float32()
+            vis_test_batch = vis_img.float32()
             
-            ir_test_batch = ir_img.unsqueeze(0);
-            ir_test_batch = ir_test_batch.float32()
-            
-            vis_test_batch = vis_img.unsqueeze(0);
-            vis_test_batch = vis_test_batch.float32()
-            
+            # 添加维度检查
+            print(f"IR tensor shape: {ir_test_batch.shape}")
+            print(f"VIS tensor shape: {vis_test_batch.shape}")
             
             fused_y_or_gray = run(model, ir_test_batch, vis_test_batch, output_path, fileName)
             
