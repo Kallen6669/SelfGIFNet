@@ -16,14 +16,14 @@ EPSILON = 1e-5
 def normalize_Var(Var):
 	(b, ch, h, w) = Var.shape
 
-	Var_v = Var.view(b, -1)
+	Var_v = Var.reshape(b, -1)
 	t_min = jt.min(Var_v, 1)[0]
 	t_max = jt.max(Var_v, 1)[0]
 
-	t_min = t_min.view(b, 1, 1, 1)
-	t_min = t_min.repeat(1, ch, h, w)
-	t_max = t_max.view(b, 1, 1, 1)
-	t_max = t_max.repeat(1, ch, h, w)
+	t_min = t_min.reshape(b, 1, 1, 1)
+	t_min = jt.repeat(t_min, 1, ch, h, w)
+	t_max = t_max.reshape(b, 1, 1, 1)
+	t_max = jt.repeat(t_max, 1, ch, h, w)
 	Var = (Var - t_min) / (t_max - t_min + EPSILON)
 	return Var
 
@@ -54,8 +54,8 @@ def gradient(x):
 	# Jittor会自动管理设备，不需要手动指定CUDA
 	# kernel = [[0.,1.,0.],[1.,-4.,1.],[0.,1.,0.]];
 	kernel = [[1 / 8, 1 / 8, 1 / 8], [1 / 8, -1, 1 / 8], [1 / 8, 1 / 8, 1 / 8]];
-	kernel = jt.array(kernel, dtype=jt.float32).unsqueeze(0).unsqueeze(0)
-	kernel = kernel.repeat(dim[1], dim[1], 1, 1);
+	kernel = jt.unsqueeze(jt.unsqueeze(jt.array(kernel, dtype=jt.float32), 0), 0)
+	kernel = jt.repeat(kernel, dim[1], dim[1], 1, 1);
 	# Jittor不需要Parameter，直接使用Var即可
 	weight = kernel;
 	# Jittor的ReflectionPad2d用法相同
@@ -172,9 +172,9 @@ def show_heatmap(feature, output_path):
 
 def gram_matrix(y):
 	(b, ch, h, w) = y.shape
-	features = y.view(b, ch, w * h)
+	features = y.reshape(b, ch, w * h)
 	features_t = features.transpose(1, 2)
-	gram = features.bmm(features_t) / (ch * h * w)
+	gram = jt.bmm(features, features_t) / (ch * h * w)
 	return gram
 
 

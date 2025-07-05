@@ -131,7 +131,7 @@ class RLN(nn.Module):
         normalized_input = (input - mean) / std
 
         if self.detach_grad:
-            rescale, rebias = self.meta1(std.detach()), self.meta2(mean.detach())
+            rescale, rebias = self.meta1(jt.stop_grad(std)), self.meta2(jt.stop_grad(mean))
         else:
             rescale, rebias = self.meta1(std), self.meta2(mean)
 
@@ -187,15 +187,15 @@ class PatchUnEmbed(nn.Module):
 #SwinTransformer - Window patition
 def window_partition(x, window_size):
     B, H, W, C = x.shape
-    x = x.view(B, H // window_size, window_size, W // window_size, window_size, C)
-    windows = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(-1, window_size ** 2, C)
+    x = x.reshape(B, H // window_size, window_size, W // window_size, window_size, C)
+    windows = x.permute(0, 1, 3, 2, 4, 5).reshape(-1, window_size ** 2, C)
     return windows
 
 #SwinTransformer - Window reverse
 def window_reverse(windows, window_size, H, W):
     B = int(windows.shape[0] / (H * W / window_size / window_size))
-    x = windows.view(B, H // window_size, W // window_size, window_size, window_size, -1)
-    x = x.permute(0, 1, 3, 2, 4, 5).contiguous().view(B, H, W, -1)
+    x = windows.reshape(B, H // window_size, W // window_size, window_size, window_size, -1)
+    x = x.permute(0, 1, 3, 2, 4, 5).reshape(B, H, W, -1)
     return x
 
 #SwinTransformer - get relative position
@@ -207,7 +207,7 @@ def get_relative_positions(window_size):
     coords_flatten = jt.flatten(coords, 1)  # 2, Wh*Ww
     relative_positions = coords_flatten[:, :, None] - coords_flatten[:, None, :]  # 2, Wh*Ww, Wh*Ww
 
-    relative_positions = relative_positions.permute(1, 2, 0).contiguous()  # Wh*Ww, Wh*Ww, 2
+    relative_positions = relative_positions.permute(1, 2, 0)  # Wh*Ww, Wh*Ww, 2
     sign = jt.where(relative_positions > 0, 1, jt.where(relative_positions < 0, -1, 0))
     relative_positions_log = sign * jt.log(1. + jt.abs(relative_positions))
 
@@ -259,11 +259,11 @@ class WindowAttention(nn.Module):
 
 
             relative_position_bias = self.meta(self.relative_positions)
-            relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
+            relative_position_bias = relative_position_bias.permute(2, 0, 1)  # nH, Wh*Ww, Wh*Ww
 
             with jt.no_grad():
-                attn = attn + relative_position_bias.unsqueeze(0)        
-            attn_mfif = attn_mfif + relative_position_bias.unsqueeze(0)
+                attn = attn + jt.unsqueeze(relative_position_bias, 0)        
+            attn_mfif = attn_mfif + jt.unsqueeze(relative_position_bias, 0)
 
             with jt.no_grad():
                 attn = self.softmax(attn)
@@ -293,11 +293,11 @@ class WindowAttention(nn.Module):
                     attn_mfif = (q_mfif @ k_mfif.transpose(-2, -1))
 
             relative_position_bias = self.meta(self.relative_positions)
-            relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
+            relative_position_bias = relative_position_bias.permute(2, 0, 1)  # nH, Wh*Ww, Wh*Ww
 
-            attn = attn + relative_position_bias.unsqueeze(0)        
+            attn = attn + jt.unsqueeze(relative_position_bias, 0)        
             with jt.no_grad():
-                attn_mfif = attn_mfif + relative_position_bias.unsqueeze(0)
+                attn_mfif = attn_mfif + jt.unsqueeze(relative_position_bias, 0)
 
             attn = self.softmax(attn)
             with jt.no_grad():
@@ -317,12 +317,12 @@ def save_feature_maps_as_images(feature_maps, alias, numFeatures = 3, output_fol
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    # Assuming feature_maps is a PyTorch tensor with dimensions BxCxHxW
-    batch_size, num_channels, height, width = feature_maps.size()    
+    # Assuming feature_maps is a Jittor tensor with dimensions BxCxHxW
+    batch_size, num_channels, height, width = feature_maps.shape    
     for i in range(batch_size):
         for j in range(numFeatures):
             # Get the j-th channel of the i-th feature map
-            channel_data = feature_maps[i, j, :, :].cpu().detach().numpy()
+            channel_data = feature_maps[i, j, :, :].numpy()
 
             # Normalize values to be in the range [0, 255]
             channel_data = (channel_data - channel_data.min()) / (channel_data.max() - channel_data.min()) * 255
@@ -400,7 +400,7 @@ class Attention(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def check_size(self, x, shift=False):
-        _, _, h, w = x.size()
+        _, _, h, w = x.shape
         mod_pad_h = (self.window_size - h % self.window_size) % self.window_size
         mod_pad_w = (self.window_size - w % self.window_size) % self.window_size
 
@@ -776,7 +776,7 @@ class TransformerNet(nn.Module):
         self.patch_unembed = PatchUnEmbed(patch_size=1, out_chans=embed_dims[0], embed_dim=embed_dims[0], kernel_size=3)                                 
                 
     def check_image_size(self, x):
-        _, _, h, w = x.size()
+        _, _, h, w = x.shape
         mod_pad_h = (self.patch_size - h % self.patch_size) % self.patch_size
         mod_pad_w = (self.patch_size - w % self.patch_size) % self.patch_size
         x = reflection_pad(x, right=mod_pad_w, bottom=mod_pad_h)
@@ -798,7 +798,7 @@ class TransformerNet(nn.Module):
         #save_feature_maps_as_images(x_ivif,"afterAttentionIVIF",20);
         
         x = self.patch_unembed(x);        
-        _,_,h,w = x.size()
+        _,_,h,w = x.shape
         
         x = x[:, :, :h - mod_pad_h_ivif, :w - mod_pad_w_ivif]        
         

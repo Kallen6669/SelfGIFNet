@@ -7,3 +7,5 @@ question.md
 train_fixed.py
 train_optimized.py
 /img
+/model
+/model2

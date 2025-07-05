@@ -3,8 +3,8 @@ class Args():
     path_ir = ''
     cuda = 1
     lr = 1e-4
-    epochs = 40
-    batch_size = 8
+    epochs = 20
+    batch_size = 4
     device = 0;
 
     # 网络参数
@@ -16,7 +16,7 @@ class Args():
     s = 3  # filter size
     stride = 1
     num_block = 4  
-    train_num = 20000
+    train_num = 10000
 
     resume_model = None
     save_fusion_model = "./model"

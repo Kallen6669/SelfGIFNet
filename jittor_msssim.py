@@ -7,10 +7,10 @@ def gaussian(window_size, sigma):
     return gauss/gauss.sum()
 
 def create_window(window_size, channel):
-    _1D_window = gaussian(window_size, 1.5).unsqueeze(1)
+    _1D_window = jt.unsqueeze(gaussian(window_size, 1.5), 1)
     # Jittor使用@操作符或jt.matmul进行矩阵乘法
-    _2D_window = (_1D_window @ _1D_window.t()).float32().unsqueeze(0).unsqueeze(0)
-    window = _2D_window.expand(channel, 1, window_size, window_size).contiguous()
+    _2D_window = jt.unsqueeze(jt.unsqueeze((_1D_window @ _1D_window.transpose()).float32(), 0), 0)
+    window = jt.expand(_2D_window, channel, 1, window_size, window_size)
     return window
 
 def ssim(img1, img2, window_size=11, window=None, size_average=True, full=False, val_range=None):

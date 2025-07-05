@@ -80,9 +80,11 @@ def safe_weight_calculation(grad_ir, grad_vi):
 def main():
     # 强制启用CUDA并设置内存管理
     jt.flags.use_cuda = 1
+    # jt.flags.gpu_memory_limit = 0.7  # 限制GPU内存使用为70%
     
     print(f"Jittor CUDA状态: {jt.flags.use_cuda}")
     print(f"当前批次大小: {args.batch_size}")
+    # print(f"GPU内存限制: {jt.flags.gpu_memory_limit}")
     
     # 加载与训练好的densenet模型
     densenet = models.densenet121(pretrained=True)
@@ -149,12 +151,14 @@ def main():
     loss_item2_com = 0.
     gifNet.train()
 
-    step = 10
+    step = 5
 
-    # 外层进度条：epoch进度
-    epoch_pbar = tqdm(range(args.epochs), desc="Epochs", position=0, leave=True)
+    # 初始化变量，避免未定义错误
+    item1_IM_loss_cnn = None
+    item2_clarity_loss = None
+    e = 0  # 初始化epoch变量
     
-    for e in epoch_pbar:
+    for e in range(args.epochs):
         batch_num = math.ceil(len(data_loader)/args.batch_size)
         loss_item1_spe = 0.
         loss_item2_spe = 0.
@@ -163,7 +167,7 @@ def main():
         
         # 内层进度条：batch进度
         batch_pbar = tqdm(enumerate(data_loader), total=math.ceil(len(data_loader)/args.batch_size), 
-                         desc=f"Epoch {e+1}/{args.epochs}", position=1, leave=False)
+                         desc=f"Epoch {e+1}/{args.epochs}", leave=True)
         
         for idx, batch in batch_pbar:
             try:
@@ -274,10 +278,13 @@ def main():
                 loss_item2_spe += item2_supLoss;            
                 loss_item2_com += item2_commonLoss;
 
-            except Exception as e:
-                print(f"第{idx}个batch训练出错: {str(e)}")
-                # 清理GPU内存
-                jt.gc()
+            except Exception as exc:
+                print(f"第{idx}个batch训练出错: {str(exc)}")
+                # # 清理GPU内存
+                # jt.gc()
+                # # 强制清理内存
+                # import gc
+                # gc.collect()
                 continue
                 
             # 更新进度条描述
@@ -294,10 +301,10 @@ def main():
                     'LR': f'{args.lr:.2e}'
                 })
 
-                mesg = "{}\t Count {} \t Epoch {}/{} \t Batch {}/{} \n " \
-                       "IM loss: {:.6f} \n". \
-                    format(time.ctime(), idx, e + 1, args.epochs, idx + 1, batch_num, item1_IM_loss_cnn.item())
-                print(mesg)
+                # mesg = "{}\t Count {} \t Epoch {}/{} \t Batch {}/{} \n " \
+                #        "IM loss: {:.6f} \n". \
+                #     format(time.ctime(), idx, e + 1, args.epochs, idx + 1, batch_num, item1_IM_loss_cnn.item())
+                # print(mesg)
 
                 Loss_list_item1_spe.append(loss_item1_spe.item());
                 Loss_list_item1_com.append(loss_item1_com.item());
@@ -309,7 +316,7 @@ def main():
                 loss_item1_com = 0.
                 loss_item2_com = 0.
 
-            if (idx+1) % 300 == 0:
+            if (idx+1) % 10 == 0:
                 temp_loss = "epoch_" + str(e + 1) + "_batch_" + str(idx + 1) + \
                             "_block_" + str(time.ctime()).replace(' ', '_').replace(':', '_') + ".mat"
                 lossChartSave(temp_loss,"item1_spe_loss",Loss_list_item1_spe);
@@ -318,44 +325,39 @@ def main():
                 lossChartSave(temp_loss,"item2_com_loss",Loss_list_item2_com);
                 
 
-            if (idx+1) % 700 == 0:
-                # save model ever 700 iter.
-                #twoBranchesFusionModel.eval()
-                gifNet.cpu()
+            # if (idx+1) % 60 == 0:
+            #     # save model ever 700 iter.
+            #     #twoBranchesFusionModel.eval()
                 
-                save_model_filename = "MTFusion_net_epoch_" + str(e + 1) + "_count_" + str(idx+1) + "_twoBranches"  + ".model"
-                save_model_path = os.path.join(temp_path_model, save_model_filename)
-                jt.save(gifNet.state_dict(), save_model_path)
+            #     save_model_filename = "MTFusion_net_epoch_" + str(e + 1) + "_count_" + str(idx+1) + "_twoBranches"  + ".model"
+            #     save_model_path = os.path.join(temp_path_model, save_model_filename)
+            #     jt.save(gifNet.state_dict(), save_model_path)
                 
                 
-                print('Saving model at ' + save_model_path + '......')
+            #     print('Saving model at ' + save_model_path + '......')
                 ##############
                 #twoBranchesFusionModel.train()
-                if (args.cuda):
-                    gifNet.cuda()
 
-        # 更新epoch进度条
-        epoch_pbar.set_postfix({
-            'Epoch': f'{e+1}/{args.epochs}',
-            'Last_IM_loss': f'{item1_IM_loss_cnn.item():.4f}',
-            'Last_MFIF_loss': f'{item2_clarity_loss.item():.4f}'
-        })
+        # 打印epoch完成信息
+        if item1_IM_loss_cnn is not None and item2_clarity_loss is not None:
+            print(f"\nEpoch {e+1}/{args.epochs} 完成 - 最后损失: IM={item1_IM_loss_cnn.item():.4f}, MFIF={item2_clarity_loss.item():.4f}")
+        else:
+            print(f"\nEpoch {e+1}/{args.epochs} 完成 - 无有效损失数据")
 
         # 保存模型
         gifNet.eval()
-        gifNet.cpu()
-        save_model_filename = "MTFusion_net" + "_epoch_" + str(e + 1) + "_twoBranches"  + ".model"
-        save_model_path = os.path.join(temp_path_model, save_model_filename)
-        jt.save(gifNet.state_dict(), save_model_path)
+        save_model_path = None
+        if e % 5 == 0:
+            save_model_filename = "MTFusion_net" + "_epoch_" + str(e + 1) + "_twoBranches"  + ".model"
+            save_model_path = os.path.join(temp_path_model, save_model_filename)
+            jt.save(gifNet.state_dict(), save_model_path)
+            print(f"\nEpoch {e+1} 完成，模型已保存到: {save_model_path}")
+        else:
+            print(f"\nEpoch {e+1} 完成")
         ##############
         gifNet.train()
-        if (args.cuda):
-            gifNet.cuda()
-        print(f"\nEpoch {e+1} 完成，模型已保存到: {save_model_path}")
 
-    # 关闭进度条
-    epoch_pbar.close()
-    print("\n训练完成！最终模型已保存到", save_model_path)
+    print("\n训练完成！")
 
 
 
