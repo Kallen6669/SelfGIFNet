@@ -1,0 +1,59 @@
+Jittor ResNet18 训练统计
+准确率：99.65%
+总训练时间: 2993.63秒
+平均每轮时间: 59.81秒
+训练开始前GPU显存: 14504.0MB
+训练结束后GPU显存: 16198.0MB
+本次实验总消耗显存: 1694.0MB
+最终系统内存使用: 36.0GB / 125.0GB (30.7%)
+各轮训练时间:
+  Epoch 1: 61.69秒
+  Epoch 2: 59.89秒
+  Epoch 3: 57.73秒
+  Epoch 4: 60.63秒
+  Epoch 5: 60.10秒
+  Epoch 6: 60.19秒
+  Epoch 7: 59.86秒
+  Epoch 8: 60.55秒
+  Epoch 9: 59.87秒
+  Epoch 10: 60.11秒
+  Epoch 11: 60.13秒
+  Epoch 12: 58.44秒
+  Epoch 13: 60.06秒
+  Epoch 14: 60.16秒
+  Epoch 15: 60.48秒
+  Epoch 16: 60.38秒
+  Epoch 17: 59.91秒
+  Epoch 18: 60.22秒
+  Epoch 19: 59.84秒
+  Epoch 20: 57.96秒
+  Epoch 21: 61.22秒
+  Epoch 22: 60.56秒
+  Epoch 23: 60.79秒
+  Epoch 24: 59.94秒
+  Epoch 25: 60.19秒
+  Epoch 26: 60.39秒
+  Epoch 27: 59.84秒
+  Epoch 28: 58.01秒
+  Epoch 29: 59.96秒
+  Epoch 30: 59.65秒
+  Epoch 31: 60.40秒
+  Epoch 32: 59.60秒
+  Epoch 33: 59.81秒
+  Epoch 34: 59.46秒
+  Epoch 35: 59.71秒
+  Epoch 36: 60.18秒
+  Epoch 37: 57.75秒
+  Epoch 38: 59.62秒
+  Epoch 39: 59.52秒
+  Epoch 40: 59.82秒
+  Epoch 41: 59.83秒
+  Epoch 42: 59.36秒
+  Epoch 43: 59.84秒
+  Epoch 44: 59.39秒
+  Epoch 45: 57.70秒
+  Epoch 46: 60.28秒
+  Epoch 47: 59.54秒
+  Epoch 48: 59.77秒
+  Epoch 49: 59.93秒
+  Epoch 50: 60.00秒

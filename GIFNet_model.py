@@ -909,17 +909,34 @@ class GIFNet(nn.Module):
 
 
 
+from jittor.dataset.dataset import DataLoader
+from GIFNetDataset import CustomDataset
 
 if __name__ == "__main__":
     gifNet = GIFNet(s=3, n=64, channel=1, stride=1)
-    x = jt.randn(1, 1, 256, 256)
-    y = jt.randn(1, 1, 256, 256)
-    output = gifNet.forward_encoder(x, y)
-    print(output.shape)
-    output1 = gifNet.forward_rec_decoder(output)
-    print(output1.shape)
-    output2 = gifNet.forward_MultiTask_branch(output, output, trainingTag = 1)
-    print(output2.shape)
-    output3 = gifNet.forward_mixed_decoder(output, output2)
-    print(output3.shape)
+
+    root_dir = "./train_data"
+    image_numbers = list(range(1, 10))
+
+    # 与pytorch不同的地方，pytorch需要用到torchversion中的transforms
+    def transform(img_array):
+        # 归一化到0-1范围
+        return jt.array(img_array) / 255.0
+
+    custom_dataset = CustomDataset(root = root_dir, image_numbers = image_numbers, transform = transform)
+    data_loader = DataLoader(custom_dataset, batch_size=1, shuffle=False)
+    for idx, batch in enumerate(data_loader):
+            batch_ir, batch_vi, batch_ir_NF, batch_vi_FF = batch
+
+            IVIF_step = 1;
+            MFIF_step = 1;
+
+            fea_com_ivif = gifNet.forward_encoder(batch_ir, batch_vi)
+            with jt.no_grad():
+                fea_com_mfif = gifNet.forward_encoder(batch_ir_NF, batch_vi_FF)
+            out_rec = gifNet.forward_rec_decoder(fea_com_ivif)
+            fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif, fea_com_mfif, trainingTag = 1)
+            out_f = gifNet.forward_mixed_decoder(fea_com_ivif, fea_fused); 
+
+
 

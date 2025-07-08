@@ -2,10 +2,10 @@
 /train_data/infrared
 /train_data/visible_focus_near
 /train_data/visible_focus_far
-
+/compare/checkpoints/jittor_resnet18_epoch_50.pkl
+/compare/checkpoints/pytorch_resnet18_epoch_50.pth
+/compare/data/cifar-10-batches-py
+/compare/data/cifar-10-python.tar.gz
+/compare/nohup/nohup_jittor_compare.out
+/compare/nohup/nohup_pytorch_compare.out
 question.md
-train_fixed.py
-train_optimized.py
-/img
-/model
-/model2

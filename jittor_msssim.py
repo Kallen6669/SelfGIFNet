@@ -93,42 +93,6 @@ def msssim(img1, img2, window_size=11, size_average=True, val_range=None, normal
     return output
 
 
-# Classes to re-use window
-class SSIM(nn.Module):
-    def __init__(self, window_size=11, size_average=True, val_range=None):
-        super().__init__()
-        self.window_size = window_size
-        self.size_average = size_average
-        self.val_range = val_range
-
-        # Assume 1 channel for SSIM
-        self.channel = 1
-        self.window = create_window(window_size, self.channel)
-
-    def execute(self, img1, img2):
-        (_, channel, _, _) = img1.shape
-
-        if channel == self.channel and self.window.dtype == img1.dtype:
-            window = self.window
-        else:
-            window = create_window(self.window_size, channel)
-            self.window = window
-            self.channel = channel
-
-        return ssim(img1, img2, window=window, window_size=self.window_size, size_average=self.size_average)
-
-class MSSSIM(nn.Module):
-    def __init__(self, window_size=11, size_average=True, channel=3):
-        super().__init__()
-        self.window_size = window_size
-        self.size_average = size_average
-        self.channel = channel
-
-    def execute(self, img1, img2):
-        # TODO: store window between calls if possible
-        return msssim(img1, img2, window_size=self.window_size, size_average=self.size_average)
-
-
 if __name__ == "__main__":
     img1 = jt.randn(1, 3, 256, 256)
     img2 = jt.randn(1, 3, 256, 256)

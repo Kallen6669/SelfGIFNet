@@ -1,0 +1,59 @@
+PyTorch ResNet18 训练统计
+准确率：99.59%
+总训练时间: 842.51秒
+平均每轮时间: 16.76秒
+训练开始前GPU显存: 12932.0MB
+训练结束后GPU显存: 13338.0MB
+本次实验总消耗显存: 406.0MB
+最终系统内存使用: 37.0GB / 125.0GB (31.6%)
+各轮训练时间:
+  Epoch 1: 16.67秒
+  Epoch 2: 16.46秒
+  Epoch 3: 16.73秒
+  Epoch 4: 16.57秒
+  Epoch 5: 16.26秒
+  Epoch 6: 16.30秒
+  Epoch 7: 16.66秒
+  Epoch 8: 16.10秒
+  Epoch 9: 16.13秒
+  Epoch 10: 25.85秒
+  Epoch 11: 16.11秒
+  Epoch 12: 16.30秒
+  Epoch 13: 16.14秒
+  Epoch 14: 16.40秒
+  Epoch 15: 16.56秒
+  Epoch 16: 16.16秒
+  Epoch 17: 16.13秒
+  Epoch 18: 16.28秒
+  Epoch 19: 16.26秒
+  Epoch 20: 16.33秒
+  Epoch 21: 16.17秒
+  Epoch 22: 17.03秒
+  Epoch 23: 16.22秒
+  Epoch 24: 16.51秒
+  Epoch 25: 16.37秒
+  Epoch 26: 16.13秒
+  Epoch 27: 16.51秒
+  Epoch 28: 17.02秒
+  Epoch 29: 16.71秒
+  Epoch 30: 16.19秒
+  Epoch 31: 16.24秒
+  Epoch 32: 16.75秒
+  Epoch 33: 16.49秒
+  Epoch 34: 16.22秒
+  Epoch 35: 16.54秒
+  Epoch 36: 16.37秒
+  Epoch 37: 16.41秒
+  Epoch 38: 16.39秒
+  Epoch 39: 16.19秒
+  Epoch 40: 26.09秒
+  Epoch 41: 16.46秒
+  Epoch 42: 16.33秒
+  Epoch 43: 16.56秒
+  Epoch 44: 16.15秒
+  Epoch 45: 16.33秒
+  Epoch 46: 16.11秒
+  Epoch 47: 16.17秒
+  Epoch 48: 16.25秒
+  Epoch 49: 16.26秒
+  Epoch 50: 16.33秒

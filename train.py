@@ -1,96 +1,55 @@
-import os
-import sys
-import math
-
-# 强制启用CUDA
-os.environ['USE_CUDA'] = '1'
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-
-# 设置Jittor日志级别，抑制警告信息
-os.environ['JITTOR_LOG_LEVEL'] = 'error'
-
 import jittor as jt
-# 强制启用CUDA
-jt.flags.use_cuda = 1
-
 from jittor.optim import Adam
-from jittor import transform
 from jittor import models
-import time
 from jittor import nn
 from jittor.dataset.dataset import DataLoader
 
 import argparse
-import scipy.io as scio
-import matplotlib
-import matplotlib.pyplot as plt
+import time
 from tqdm import tqdm
+import GPUtil
+import os
+import math
 
 from args import Args as args
 from jittor_msssim import msssim
 from GIFNet_model import GIFNet
 from GIFNetDataset import CustomDataset
-from utils import gradient
+from utils import lossChartSave, safe_weight_calculation, gradient, transform
 
-# 先确定显卡
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# 启用CUDA
+jt.flags.use_cuda = 1
+# 使用CUDA 0卡
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+# 设置Jittor日志级别，抑制警告信息
+os.environ['JITTOR_LOG_LEVEL'] = 'error'
 
-
+# 解析参数
 parser = argparse.ArgumentParser()
 parser.add_argument('--trainDataRoot', type=str, default='./train_data', help='训练数据路径')
 opt = parser.parse_args()
 
-matplotlib.use('Agg')
-# 显示损失图
-def showLossChart(path,saveName):
-    # 清空当前图像
-    plt.cla()
-    plt.clf()
-    if (path == ""):
-        return
-    data = scio.loadmat(path)
-    loss =data['Loss'][0]
-
-    x_data = range(0,len(loss))
-    y_data = loss
-
-    plt.plot(x_data,y_data)
-    plt.xlabel("Step")
-    plt.ylabel("Loss")
-    plt.savefig(saveName)
-
-# 保存损失图
-def lossChartSave(temp_loss,lossName,lossList):        
-    # 保存item1_spe loss
-    loss_filename_path = lossName + temp_loss
-    save_loss_path = os.path.join(os.path.join(args.save_loss_dir), loss_filename_path)
-    scio.savemat(save_loss_path, {'Loss': lossList})
-    showLossChart(save_loss_path,os.path.join(args.save_loss_dir)+"/"+lossName+'.png')        
-
-# 安全的权重计算函数
-def safe_weight_calculation(grad_ir, grad_vi):
-    max_val = jt.maximum(grad_ir, grad_vi)
-    exp_ir = jt.exp(grad_ir - max_val)
-    exp_vi = jt.exp(grad_vi - max_val)
-    total = exp_ir + exp_vi
-    weight_ir = exp_ir / total
-    weight_vi = exp_vi / total
-    return weight_ir, weight_vi
 
 def main():
-    # 强制启用CUDA并设置内存管理
-    jt.flags.use_cuda = 1
-    # jt.flags.gpu_memory_limit = 0.7  # 限制GPU内存使用为70%
+    # 记录训练开始时间
+    start_time = time.time()
     
     print(f"Jittor CUDA状态: {jt.flags.use_cuda}")
     print(f"当前批次大小: {args.batch_size}")
-    # print(f"GPU内存限制: {jt.flags.gpu_memory_limit}")
+
+    # 显示初始GPU内存使用情况
+    try:
+        gpus = GPUtil.getGPUs()
+        if gpus:
+            # 注意此处要与上述的os.environ['CUDA_VISIBLE_DEVICES'] = '0'一致
+            gpu = gpus[0]
+            print(f"初始GPU显存使用: {gpu.memoryUsed}MB / {gpu.memoryTotal}MB")
+    except:
+        pass
     
     # 加载与训练好的densenet模型
     densenet = models.densenet121(pretrained=True)
     densenet.eval()
-    # Jittor会自动管理设备，不需要手动指定
-    # 对于GPU，Jittor会自动检测并使用
     features = list(densenet.features.children())
     features_1 = nn.Sequential(*features[:4])
     features_2 = nn.Sequential(*features[4:6])
@@ -103,22 +62,16 @@ def main():
     mse_loss = nn.MSELoss()
     ssim_loss = msssim
 
-    # 加载数据
     root_dir = opt.trainDataRoot
-    image_numbers = list(range(1, args.train_num))
-
-    # 与pytorch不同的地方，pytorch需要用到torchversion中的transforms
-    def transform(img_array):
-        # 归一化到0-1范围
-        return jt.array(img_array) / 255.0
+    image_numbers = list(range(0, args.train_num))
 
     custom_dataset = CustomDataset(root = root_dir, image_numbers = image_numbers, transform = transform)
-    
-    # 使用Jittor的方式设置batch_size和shuffle
-    custom_dataset.set_attrs(batch_size=args.batch_size, shuffle=True)
-    data_loader = custom_dataset
-    # data_loader = DataLoader(custom_dataset)
-    # 加载数据结束
+    # 优化数据加载器设置
+    data_loader = DataLoader(custom_dataset, 
+                           batch_size=args.batch_size, 
+                           shuffle=True,  # 启用随机打乱
+                           num_workers=4,  # 增加工作进程数
+                           drop_last=True)  # 丢弃不完整的批次
     # 开始训练
     print("开始训练")
     print(f"数据集大小: {len(data_loader)}")
@@ -137,21 +90,16 @@ def main():
 
     Loss_list_item1_spe = []
     Loss_list_item1_com = []
-    Loss_list_item1_learning = []
     Loss_list_item2_spe = []
     Loss_list_item2_com = []
 
-    Loss_list_all = []
-
-    viz_index = 0
     loss_item1_spe = 0.
     loss_item1_com = 0.
-    loss_item1_learning = 0.
     loss_item2_spe = 0.
     loss_item2_com = 0.
     gifNet.train()
 
-    step = 5
+    step = 10
 
     # 初始化变量，避免未定义错误
     item1_IM_loss_cnn = None
@@ -181,16 +129,20 @@ def main():
                 # 训练IVIF分支
                 for _ in range(IVIF_step):
                     optimizer.zero_grad()
-                    # 首先利用公共提取器来提取两个分支的特征,且MFIF分支的特征是冻结的
+                    
+                    # 预先计算特征，避免重复计算
                     fea_com_ivif = gifNet.forward_encoder(batch_ir, batch_vi)
                     with jt.no_grad():
                         fea_com_mfif = gifNet.forward_encoder(batch_ir_NF, batch_vi_FF)
+                    
+                    # 并行计算多个输出
                     out_rec = gifNet.forward_rec_decoder(fea_com_ivif)
                     fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif, fea_com_mfif, trainingTag = 1)
-                    out_f = gifNet.forward_mixed_decoder(fea_com_ivif, fea_fused); 
+                    out_f = gifNet.forward_mixed_decoder(fea_com_ivif, fea_fused)
 
-                     #计算源图像的信息量的度量。
+                    # 优化梯度计算，减少内存占用
                     with jt.no_grad():
+                        # 使用更高效的方式计算梯度特征
                         t_batch_ir = batch_ir.clone()
                         t_batch_vi = batch_vi.clone()
                         dup_ir = jt.concat([t_batch_ir,t_batch_ir,t_batch_ir],1)
@@ -301,10 +253,6 @@ def main():
                     'LR': f'{args.lr:.2e}'
                 })
 
-                # mesg = "{}\t Count {} \t Epoch {}/{} \t Batch {}/{} \n " \
-                #        "IM loss: {:.6f} \n". \
-                #     format(time.ctime(), idx, e + 1, args.epochs, idx + 1, batch_num, item1_IM_loss_cnn.item())
-                # print(mesg)
 
                 Loss_list_item1_spe.append(loss_item1_spe.item());
                 Loss_list_item1_com.append(loss_item1_com.item());
@@ -316,7 +264,7 @@ def main():
                 loss_item1_com = 0.
                 loss_item2_com = 0.
 
-            if (idx+1) % 10 == 0:
+            if (idx+1) % 100 == 0:
                 temp_loss = "epoch_" + str(e + 1) + "_batch_" + str(idx + 1) + \
                             "_block_" + str(time.ctime()).replace(' ', '_').replace(':', '_') + ".mat"
                 lossChartSave(temp_loss,"item1_spe_loss",Loss_list_item1_spe);
@@ -324,19 +272,6 @@ def main():
                 lossChartSave(temp_loss,"item2_spe_loss",Loss_list_item2_spe);
                 lossChartSave(temp_loss,"item2_com_loss",Loss_list_item2_com);
                 
-
-            # if (idx+1) % 60 == 0:
-            #     # save model ever 700 iter.
-            #     #twoBranchesFusionModel.eval()
-                
-            #     save_model_filename = "MTFusion_net_epoch_" + str(e + 1) + "_count_" + str(idx+1) + "_twoBranches"  + ".model"
-            #     save_model_path = os.path.join(temp_path_model, save_model_filename)
-            #     jt.save(gifNet.state_dict(), save_model_path)
-                
-                
-            #     print('Saving model at ' + save_model_path + '......')
-                ##############
-                #twoBranchesFusionModel.train()
 
         # 打印epoch完成信息
         if item1_IM_loss_cnn is not None and item2_clarity_loss is not None:
@@ -347,7 +282,7 @@ def main():
         # 保存模型
         gifNet.eval()
         save_model_path = None
-        if e % 5 == 0:
+        if (e+1) % 5 == 0:
             save_model_filename = "MTFusion_net" + "_epoch_" + str(e + 1) + "_twoBranches"  + ".model"
             save_model_path = os.path.join(temp_path_model, save_model_filename)
             jt.save(gifNet.state_dict(), save_model_path)
@@ -357,7 +292,32 @@ def main():
         ##############
         gifNet.train()
 
-    print("\n训练完成！")
+    # 计算训练总时间
+    end_time = time.time()
+    total_training_time = end_time - start_time
+    
+    # 获取最终显存使用情况
+    try:
+        gpus = GPUtil.getGPUs()
+        if gpus:
+            gpu = gpus[0]  # 获取第一个GPU
+            gpu_memory_used = gpu.memoryUsed
+            gpu_memory_total = gpu.memoryTotal
+            gpu_memory_percent = (gpu_memory_used / gpu_memory_total) * 100
+            final_gpu_memory = f"{gpu_memory_used}MB / {gpu_memory_total}MB ({gpu_memory_percent:.1f}%)"
+        else:
+            final_gpu_memory = "无法获取GPU信息"
+    except Exception as e:
+        final_gpu_memory = f"获取GPU信息失败: {str(e)}"
+    
+    print("\n" + "="*60)
+    print("训练完成！")
+    print("="*60)
+    print(f"训练总时间: {total_training_time:.2f} seconds ({total_training_time/3600:.2f} hours)")
+    print(f"平均每轮训练时间: {total_training_time/args.epochs:.2f} seconds")
+    print(f"最终GPU显存使用情况: {final_gpu_memory}")
+    print(f"模型保存路径: {save_model_path}")
+    print("="*60)
 
 
 

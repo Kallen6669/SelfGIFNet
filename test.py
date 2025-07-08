@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # 使用GPU 1
 import cv2
 import jittor as jt
 import time
@@ -28,6 +28,9 @@ def resize_images(images, target_size=(128, 128)):
     return jt.nn.interpolate(images, size=target_size, mode='bilinear', align_corners=False)
 
 def load_model(model_path_twoBranches):
+    # 设置内存管理
+    jt.flags.use_cuda = 1
+    
     model = GIFNet(args.s, args.n, args.channel, args.stride)
 
     model.load_state_dict(jt.load(model_path_twoBranches))
