@@ -5,7 +5,7 @@ import cv2
 from PIL import Image
 from pathlib import Path
 
-num_images = 10
+num_images = 300
 def detect_image_resolutions(folder_path):
     """
     检测文件夹内所有图片的分辨率，返回一个包含所有分辨率的set

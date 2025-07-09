@@ -123,108 +123,102 @@ def main():
                 # 数据已经是Jittor的Var类型，可以直接使用
                 batch_ir, batch_vi, batch_ir_NF, batch_vi_FF = batch
 
-                IVIF_step = 1;
-                MFIF_step = 1;
-
                 # 训练IVIF分支
-                for _ in range(IVIF_step):
-                    optimizer.zero_grad()
-                    
-                    # 预先计算特征，避免重复计算
-                    fea_com_ivif = gifNet.forward_encoder(batch_ir, batch_vi)
-                    with jt.no_grad():
-                        fea_com_mfif = gifNet.forward_encoder(batch_ir_NF, batch_vi_FF)
-                    
-                    # 并行计算多个输出
-                    out_rec = gifNet.forward_rec_decoder(fea_com_ivif)
-                    fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif, fea_com_mfif, trainingTag = 1)
-                    out_f = gifNet.forward_mixed_decoder(fea_com_ivif, fea_fused)
+                optimizer.zero_grad()
+                
+                # 预先计算特征，避免重复计算
+                fea_com_ivif = gifNet.forward_encoder(batch_ir, batch_vi)
+                with jt.no_grad():
+                    fea_com_mfif = gifNet.forward_encoder(batch_ir_NF, batch_vi_FF)
+                
+                # 并行计算多个输出
+                out_rec = gifNet.forward_rec_decoder(fea_com_ivif)
+                fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif, fea_com_mfif, trainingTag = 1)
+                out_f = gifNet.forward_mixed_decoder(fea_com_ivif, fea_fused)
 
-                    # 优化梯度计算，减少内存占用
-                    with jt.no_grad():
-                        # 使用更高效的方式计算梯度特征
-                        t_batch_ir = batch_ir.clone()
-                        t_batch_vi = batch_vi.clone()
-                        dup_ir = jt.concat([t_batch_ir,t_batch_ir,t_batch_ir],1)
-                        dup_vi = jt.concat([t_batch_vi,t_batch_vi,t_batch_vi],1)
-                        layer1_feature_ir = features_1(dup_ir)
-                        layer2_feature_ir = features_2(layer1_feature_ir)
-                        layer3_feature_ir = features_3(layer2_feature_ir)
-                        layer4_feature_ir = features_4(layer3_feature_ir)
-                        layer5_feature_ir = features_5(layer4_feature_ir)
-                        layer1_feature_vi = features_1(dup_vi)
-                        layer2_feature_vi = features_2(layer1_feature_vi)
-                        layer3_feature_vi = features_3(layer2_feature_vi)
-                        layer4_feature_vi = features_4(layer3_feature_vi)
-                        layer5_feature_vi = features_5(layer4_feature_vi)
-                        # clamp防止极端值
-                        layer1_feature_ir = jt.clamp(gradient(layer1_feature_ir)**2, 0, 100)
-                        layer2_feature_ir = jt.clamp(gradient(layer2_feature_ir)**2, 0, 100)
-                        layer3_feature_ir = jt.clamp(gradient(layer3_feature_ir)**2, 0, 100)
-                        layer4_feature_ir = jt.clamp(gradient(layer4_feature_ir)**2, 0, 100)
-                        layer5_feature_ir = jt.clamp(gradient(layer5_feature_ir)**2, 0, 100)
-                        grad_ir_cnn = jt.mean(layer1_feature_ir)+jt.mean(layer2_feature_ir)+jt.mean(layer3_feature_ir)+jt.mean(layer4_feature_ir)+jt.mean(layer5_feature_ir)
-                        grad_ir_cnn /= 5
-                        layer1_feature_vi = jt.clamp(gradient(layer1_feature_vi)**2, 0, 100)
-                        layer2_feature_vi = jt.clamp(gradient(layer2_feature_vi)**2, 0, 100)
-                        layer3_feature_vi = jt.clamp(gradient(layer3_feature_vi)**2, 0, 100)
-                        layer4_feature_vi = jt.clamp(gradient(layer4_feature_vi)**2, 0, 100)
-                        layer5_feature_vi = jt.clamp(gradient(layer5_feature_vi)**2, 0, 100)
-                        grad_vi_cnn = jt.mean(layer1_feature_vi) + jt.mean(layer2_feature_vi)+ jt.mean(layer3_feature_vi)+ jt.mean(layer4_feature_vi)+ jt.mean(layer5_feature_vi)
-                        grad_vi_cnn /= 5
-                        # 使用安全权重
-                        weightNonInterestedIR_cnn, weightNonInterestedVI_cnn = safe_weight_calculation(grad_ir_cnn, grad_vi_cnn)
+                # 优化梯度计算，减少内存占用
+                with jt.no_grad():
+                    # 使用更高效的方式计算梯度特征
+                    t_batch_ir = batch_ir.clone()
+                    t_batch_vi = batch_vi.clone()
+                    dup_ir = jt.concat([t_batch_ir,t_batch_ir,t_batch_ir],1)
+                    dup_vi = jt.concat([t_batch_vi,t_batch_vi,t_batch_vi],1)
+                    layer1_feature_ir = features_1(dup_ir)
+                    layer2_feature_ir = features_2(layer1_feature_ir)
+                    layer3_feature_ir = features_3(layer2_feature_ir)
+                    layer4_feature_ir = features_4(layer3_feature_ir)
+                    layer5_feature_ir = features_5(layer4_feature_ir)
+                    layer1_feature_vi = features_1(dup_vi)
+                    layer2_feature_vi = features_2(layer1_feature_vi)
+                    layer3_feature_vi = features_3(layer2_feature_vi)
+                    layer4_feature_vi = features_4(layer3_feature_vi)
+                    layer5_feature_vi = features_5(layer4_feature_vi)
+                    # clamp防止极端值
+                    layer1_feature_ir = jt.clamp(gradient(layer1_feature_ir)**2, 0, 100)
+                    layer2_feature_ir = jt.clamp(gradient(layer2_feature_ir)**2, 0, 100)
+                    layer3_feature_ir = jt.clamp(gradient(layer3_feature_ir)**2, 0, 100)
+                    layer4_feature_ir = jt.clamp(gradient(layer4_feature_ir)**2, 0, 100)
+                    layer5_feature_ir = jt.clamp(gradient(layer5_feature_ir)**2, 0, 100)
+                    grad_ir_cnn = jt.mean(layer1_feature_ir)+jt.mean(layer2_feature_ir)+jt.mean(layer3_feature_ir)+jt.mean(layer4_feature_ir)+jt.mean(layer5_feature_ir)
+                    grad_ir_cnn /= 5
+                    layer1_feature_vi = jt.clamp(gradient(layer1_feature_vi)**2, 0, 100)
+                    layer2_feature_vi = jt.clamp(gradient(layer2_feature_vi)**2, 0, 100)
+                    layer3_feature_vi = jt.clamp(gradient(layer3_feature_vi)**2, 0, 100)
+                    layer4_feature_vi = jt.clamp(gradient(layer4_feature_vi)**2, 0, 100)
+                    layer5_feature_vi = jt.clamp(gradient(layer5_feature_vi)**2, 0, 100)
+                    grad_vi_cnn = jt.mean(layer1_feature_vi) + jt.mean(layer2_feature_vi)+ jt.mean(layer3_feature_vi)+ jt.mean(layer4_feature_vi)+ jt.mean(layer5_feature_vi)
+                    grad_vi_cnn /= 5
+                    # 使用安全权重
+                    weightNonInterestedIR_cnn, weightNonInterestedVI_cnn = safe_weight_calculation(grad_ir_cnn, grad_vi_cnn)
 
-                    #item1
-                    item1_IM_loss_cnn = weightNonInterestedIR_cnn*mse_loss(out_f, batch_ir) + weightNonInterestedVI_cnn*mse_loss(out_f,batch_vi)
-                    item1_commonLoss = 1 - ssim_loss(out_rec, batch_vi, normalize = True) + mse_loss((out_rec),(batch_vi))
-                    item1_IM_loss =  item1_IM_loss_cnn + item1_commonLoss
-                    
-                    # 检查损失值是否过大
-                    if item1_IM_loss.item() > 1000:
-                        print(f"警告: 第{idx}个batch的损失过大({item1_IM_loss.item():.2f})，跳过此batch")
-                        continue
-                    
-                    # 检查损失是否为NaN
-                    if jt.isnan(item1_IM_loss).any():
-                        print(f"警告: 第{idx}个batch的损失为NaN，跳过此batch")
-                        continue
-                    
-                    optimizer.step(item1_IM_loss)    
+                #item1
+                item1_IM_loss_cnn = weightNonInterestedIR_cnn*mse_loss(out_f, batch_ir) + weightNonInterestedVI_cnn*mse_loss(out_f,batch_vi)
+                item1_commonLoss = 1 - ssim_loss(out_rec, batch_vi, normalize = True) + mse_loss((out_rec),(batch_vi))
+                item1_IM_loss =  item1_IM_loss_cnn + item1_commonLoss
+                
+                # 检查损失值是否过大
+                if item1_IM_loss.item() > 1000:
+                    print(f"警告: 第{idx}个batch的损失过大({item1_IM_loss.item():.2f})，跳过此batch")
+                    continue
+                
+                # 检查损失是否为NaN
+                if jt.isnan(item1_IM_loss).any():
+                    print(f"警告: 第{idx}个batch的损失为NaN，跳过此batch")
+                    continue
+                
+                optimizer.step(item1_IM_loss)    
                 loss_item1_spe += item1_IM_loss_cnn;
                 loss_item1_com += item1_commonLoss;
         
 
                 #MFIF branch
-                for _idx in range(MFIF_step):
-                    optimizer.zero_grad()                                
-
+                optimizer.zero_grad()                                
+                
+                fea_com = gifNet.forward_encoder(batch_ir_NF,batch_vi_FF)
+                with jt.no_grad():                
+                    fea_com_ivif = gifNet.forward_encoder(batch_ir,batch_vi)
                     
-                    fea_com = gifNet.forward_encoder(batch_ir_NF,batch_vi_FF)
-                    with jt.no_grad():                
-                        fea_com_ivif = gifNet.forward_encoder(batch_ir,batch_vi)
-                        
-                    out_rec = gifNet.forward_rec_decoder(fea_com)
-                    
-                    fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif = fea_com_ivif, fea_com_mfif = fea_com, trainingTag = 2);
-                    
-                    out_f = gifNet.forward_mixed_decoder(fea_com, fea_fused);                                                
-                    
-                    item2_commonLoss = 1 - ssim_loss(out_rec, batch_vi, normalize = True) + mse_loss((out_rec),(batch_vi));
-                    item2_supLoss = mse_loss(out_f,batch_vi)
-                    item2_clarity_loss = item2_supLoss + item2_commonLoss;
-                    
-                    # 检查损失值是否过大
-                    if item2_clarity_loss.item() > 1000:
-                        print(f"警告: 第{idx}个batch的MFIF损失过大({item2_clarity_loss.item():.2f})，跳过此batch")
-                        continue
-                    
-                    # 检查损失值是否为NaN
-                    if jt.isnan(item2_clarity_loss).any():
-                        print(f"警告: 第{idx}个batch的MFIF损失为NaN，跳过此batch")
-                        continue
-                    
-                    optimizer.step(item2_clarity_loss)                
+                out_rec = gifNet.forward_rec_decoder(fea_com)
+                
+                fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif = fea_com_ivif, fea_com_mfif = fea_com, trainingTag = 2);
+                
+                out_f = gifNet.forward_mixed_decoder(fea_com, fea_fused);                                                
+                
+                item2_commonLoss = 1 - ssim_loss(out_rec, batch_vi, normalize = True) + mse_loss((out_rec),(batch_vi));
+                item2_supLoss = mse_loss(out_f,batch_vi)
+                item2_clarity_loss = item2_supLoss + item2_commonLoss;
+                
+                # 检查损失值是否过大
+                if item2_clarity_loss.item() > 1000:
+                    print(f"警告: 第{idx}个batch的MFIF损失过大({item2_clarity_loss.item():.2f})，跳过此batch")
+                    continue
+                
+                # 检查损失值是否为NaN
+                if jt.isnan(item2_clarity_loss).any():
+                    print(f"警告: 第{idx}个batch的MFIF损失为NaN，跳过此batch")
+                    continue
+                
+                optimizer.step(item2_clarity_loss)                
                     
 
                 loss_item2_spe += item2_supLoss;            

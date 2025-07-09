@@ -7,7 +7,7 @@
 ### 2. 数据准备脚本
 该实验数据处理比较简单，无需单独的数据准备脚本，只需要按照如下压缩包解压，放在train_data目录下即可。在训练的过程中会直接使用Dataloader进行提取。其中有个参数，在args文件中的 *train_num* ,该变量是指在训练过程中使用多少数据集进行训练。
 #### 数据集
-<img width="20" src="images/dataset1.png">      训练数据集 - [百度网盘 (code: x2i6)](https://pan.baidu.com/s/16lCjucwC476dFuxtfFbP3g?pwd=x2i6)
+<img width="20" src="images/dataset1.png">      数据集 - [百度网盘 (code: 73oj)](https://pan.baidu.com/s/1OycxDBUy8d_bv5L0avnuTg?pwd=73oj)
 
 ### 3. 训练脚本
 ```cpp
@@ -76,20 +76,21 @@ python test.py  --test_ir_root "images/Remote/MS_band4" --test_vis_root "images/
 **_为了公平，于是统一标准。训练过程中参数相同，batch 大小为 4，训练样本数据 10000，训练轮数为 20, 学习率固定为 1e-4, 优化器选择的 Adam.测试中使用 640×540 分辨率的图片进行测试。_**
 
 在此处分别展示 jittor 和 pytorch 的训练过程中的loss变化，同时可以查询我的nohup文件中查询我的训练过程。
+四种loss分别是IVIF的混合分支损失，IVIF的重建分支损失，MFIF的混合分支损失,MFIF的重建分支损失.
 
 **_jittor框架_**
 
-<img width="200" src="losspng/jittor/item1_com_loss.png">
-<img width="200" src="losspng/jittor/item1_spe_loss.png">
-<img width="200" src="losspng/jittor/item2_com_loss.png">
-<img width="200" src="losspng/jittor/item2_spe_loss.png">
+<img  src="losspng/jittor/item1_com_loss.png">
+<img  src="losspng/jittor/item1_spe_loss.png">
+<img  src="losspng/jittor/item2_com_loss.png">
+<img  src="losspng/jittor/item2_spe_loss.png">
 
 **_pytorch框架_**
 
-<img width="200" src="losspng/pytorch/item1_com_loss.png">
-<img width="200" src="losspng/pytorch/item1_spe_loss.png">
-<img width="200" src="losspng/pytorch/item2_com_loss.png">
-<img width="200" src="losspng/pytorch/item2_spe_loss.png">
+<img  src="losspng/pytorch/item1_com_loss.png">
+<img  src="losspng/pytorch/item1_spe_loss.png">
+<img  src="losspng/pytorch/item2_com_loss.png">
+<img  src="losspng/pytorch/item2_spe_loss.png">
 
 ### 6. 性能log
 **_可见outputs,其中包含了多种情况下的测试图片_**.
@@ -101,11 +102,16 @@ python run_evaluation.py
 ```
 <img  src="model_comparison_table.png">
 
+样例对比
+
+<img width="500" src="outputs/outputsIVIF/jittor/190212.jpg">
+<img  width="500"src="outputs/outputsIVIF/pytorch/190212.jpg">
+
 ### 7. 实验总结
 可以见到在训练过程中jittor框架的训练时长比pytorch框架的要长，显存也要大（为了防止本模型的问题，尝试了训练RESNET18，在文件夹compare中，也是这种情况），推理速度相似，性能略差。
 
 ### 8. 反思
-得到的模型结果并不是很好，因此还在努力改进，经仔细查询和调试发现模型没有差别，目前正在损失函数和优化器，尝试优化 jittor 框架模型。
+得到的模型结果并不是很好，融合记过偏向于红外图像，因此还在努力改进，经仔细查询和调试发现模型没有差别，目前正在损失函数和优化器，尝试优化 jittor 框架模型。
 
 ## 备注
 ### 安装 jittor 遇到的问题以及解决办法

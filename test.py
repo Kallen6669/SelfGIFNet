@@ -1,13 +1,10 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # 使用GPU 1
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # 使用GPU 1
 import cv2
 import jittor as jt
-import time
 import numpy as np
 from GIFNet_model import GIFNet
 from args import Args as args
-import utils
-import matplotlib.pyplot as plt  
 from PIL import Image
 import argparse
 
