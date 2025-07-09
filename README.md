@@ -43,35 +43,12 @@ python test.py  --test_ir_root "images/IVIF/ir" --test_vis_root "images/IVIF/vis
 python test.py  --test_ir_root "images/MFIF/nf" --test_vis_root "images/MFIF/ff" --save_path "./outputs/outputsMFIF/jittor" --IR_IS_RGB --VIS_IS_RGB
 ```
 
-<img width="20" src="images/task.png"> 多曝光图像融合(MEIF):
-
-```cpp
-python test.py  --test_ir_root "images/MEIF/oe" --test_vis_root "images/MEIF/ue" --save_path "./outputs/outputsMEIF/jittor" --IR_IS_RGB --VIS_IS_RGB 
-```
-
 <img width="20" src="images/task.png"> 医学图像融合:
 
 ```cpp
 python test.py  --test_ir_root "images/Medical/pet" --test_vis_root "images/Medical/mri" --save_path "./outputs/outputsMedical/jittor" --IR_IS_RGB
 ```
 
-<img width="20" src="images/task.png"> 近红外与可见光图像融合(NIR-VIS)
-
-```cpp
-python test.py  --test_ir_root "images/NIR-VIS/nir" --test_vis_root "images/NIR-VIS/vis" --save_path "./outputs/outputsNIR-VIS/jittor" --VIS_IS_RGB
-```
-
-<img width="20" src="images/task.png"> 遥感图像融合(Remote)
-
-第一步 : 将多光谱图像的不同波段与全色图像分别进行融合
-
-(Python)
-```cpp
-python test.py  --test_ir_root "images/Remote/MS_band1" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand1/jittor"
-python test.py  --test_ir_root "images/Remote/MS_band2" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand2/jittor"
-python test.py  --test_ir_root "images/Remote/MS_band3" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand3/jittor"
-python test.py  --test_ir_root "images/Remote/MS_band4" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand4/jittor"
-```
 ### 5. 实验log
 **_为了公平，于是统一标准。训练过程中参数相同，batch 大小为 4，训练样本数据 10000，训练轮数为 20, 学习率固定为 1e-4, 优化器选择的 Adam.测试中使用 640×540 分辨率的图片进行测试。_**
 
