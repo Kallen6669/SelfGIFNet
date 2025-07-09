@@ -34,31 +34,31 @@ python train.py --trainDataRoot "./train_data"
 <img width="20" src="images/task.png"> 红外和可见共图像融合(IVIF):
 
 ```cpp
-python test.py  --test_ir_root "images/IVIF/ir" --test_vis_root "images/IVIF/vis" --save_path "./outputs/outputsIVIF" --VIS_IS_RGB 
+python test.py  --test_ir_root "images/IVIF/ir" --test_vis_root "images/IVIF/vis" --save_path "./outputs/outputsIVIF/jittor" --VIS_IS_RGB 
 ```
 
 <img width="20" src="images/task.png"> 多聚焦图像融合(MFIF):
 
 ```cpp
-python test.py  --test_ir_root "images/MFIF/nf" --test_vis_root "images/MFIF/ff" --save_path "./outputs/outputsMFIF" --IR_IS_RGB --VIS_IS_RGB
+python test.py  --test_ir_root "images/MFIF/nf" --test_vis_root "images/MFIF/ff" --save_path "./outputs/outputsMFIF/jittor" --IR_IS_RGB --VIS_IS_RGB
 ```
 
 <img width="20" src="images/task.png"> 多曝光图像融合(MEIF):
 
 ```cpp
-python test.py  --test_ir_root "images/MEIF/oe" --test_vis_root "images/MEIF/ue" --save_path "./outputs/outputsMEIF" --IR_IS_RGB --VIS_IS_RGB 
+python test.py  --test_ir_root "images/MEIF/oe" --test_vis_root "images/MEIF/ue" --save_path "./outputs/outputsMEIF/jittor" --IR_IS_RGB --VIS_IS_RGB 
 ```
 
 <img width="20" src="images/task.png"> 医学图像融合:
 
 ```cpp
-python test.py  --test_ir_root "images/Medical/pet" --test_vis_root "images/Medical/mri" --save_path "./outputs/outputsMedical" --IR_IS_RGB
+python test.py  --test_ir_root "images/Medical/pet" --test_vis_root "images/Medical/mri" --save_path "./outputs/outputsMedical/jittor" --IR_IS_RGB
 ```
 
 <img width="20" src="images/task.png"> 近红外与可见光图像融合(NIR-VIS)
 
 ```cpp
-python test.py  --test_ir_root "images/NIR-VIS/nir" --test_vis_root "images/NIR-VIS/vis" --save_path "./outputs/outputsNIR-VIS" --VIS_IS_RGB
+python test.py  --test_ir_root "images/NIR-VIS/nir" --test_vis_root "images/NIR-VIS/vis" --save_path "./outputs/outputsNIR-VIS/jittor" --VIS_IS_RGB
 ```
 
 <img width="20" src="images/task.png"> 遥感图像融合(Remote)
@@ -67,21 +67,45 @@ python test.py  --test_ir_root "images/NIR-VIS/nir" --test_vis_root "images/NIR-
 
 (Python)
 ```cpp
-python test.py  --test_ir_root "images/Remote/MS_band1" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand1"
-python test.py  --test_ir_root "images/Remote/MS_band2" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand2"
-python test.py  --test_ir_root "images/Remote/MS_band3" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand3"
-python test.py  --test_ir_root "images/Remote/MS_band4" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand4"
+python test.py  --test_ir_root "images/Remote/MS_band1" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand1/jittor"
+python test.py  --test_ir_root "images/Remote/MS_band2" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand2/jittor"
+python test.py  --test_ir_root "images/Remote/MS_band3" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand3/jittor"
+python test.py  --test_ir_root "images/Remote/MS_band4" --test_vis_root "images/Remote/PAN" --save_path "./outputs/outputsRemoteBand4/jittor"
 ```
 ### 5. 实验log
 **_为了公平，于是统一标准。训练过程中参数相同，batch 大小为 4，训练样本数据 10000，训练轮数为 20, 学习率固定为 1e-4, 优化器选择的 Adam.测试中使用 640×540 分辨率的图片进行测试。_**
 
 在此处分别展示 jittor 和 pytorch 的训练过程中的loss变化，同时可以查询我的nohup文件中查询我的训练过程。
 
+**_jittor框架_**
+
+<img width="200" src="losspng/jittor/item1_com_loss.png">
+<img width="200" src="losspng/jittor/item1_spe_loss.png">
+<img width="200" src="losspng/jittor/item2_com_loss.png">
+<img width="200" src="losspng/jittor/item2_spe_loss.png">
+
+**_pytorch框架_**
+
+<img width="200" src="losspng/pytorch/item1_com_loss.png">
+<img width="200" src="losspng/pytorch/item1_spe_loss.png">
+<img width="200" src="losspng/pytorch/item2_com_loss.png">
+<img width="200" src="losspng/pytorch/item2_spe_loss.png">
 
 ### 6. 性能log
+**_可见outputs,其中包含了多种情况下的测试图片_**.
+由于时间原因，在本次考核中我只做了有关IVIF的较大数据集LLVIP的测试，以下为各种测评指标（对应论文中的四种指标）
 
-可见outputs,以及各种测评指标
+评估脚本
+```cpp
+python run_evaluation.py
+```
+<img  src="model_comparison_table.png">
 
+### 7. 实验总结
+可以见到在训练过程中jittor框架的训练时长比pytorch框架的要长，显存也要大（为了防止本模型的问题，尝试了训练RESNET18，在文件夹compare中，也是这种情况），推理速度相似，性能略差。
+
+### 8. 反思
+得到的模型结果并不是很好，因此还在努力改进，经仔细查询和调试发现模型没有差别，目前正在损失函数和优化器，尝试优化 jittor 框架模型。
 
 ## 备注
 ### 安装 jittor 遇到的问题以及解决办法

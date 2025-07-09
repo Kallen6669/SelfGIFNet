@@ -8,4 +8,6 @@
 /compare/data/cifar-10-python.tar.gz
 /compare/nohup/nohup_jittor_compare.out
 /compare/nohup/nohup_pytorch_compare.out
+/test_data/LLVIP
+/test_data/LLVIP_original
 question.md

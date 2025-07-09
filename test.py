@@ -127,10 +127,6 @@ def fuse_cb_cr(Cb1,Cr1,Cb2,Cr2):
 
 def main():
 
-    # 原文中这几行没用到
-    # test_path = "./images/"
-    # imgs_paths_ir, names = utils.list_images(test_path)
-    # num = len(imgs_paths_ir)
     jt.flags.use_cuda = 1
     model_path_twoBranches = opt.checkpoint
 
