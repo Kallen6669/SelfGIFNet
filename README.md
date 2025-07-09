@@ -7,7 +7,7 @@
 ### 2. 数据准备脚本
 该实验数据处理比较简单，无需单独的数据准备脚本，只需要按照如下压缩包解压，放在train_data目录下即可。在训练的过程中会直接使用Dataloader进行提取。其中有个参数，在args文件中的 *train_num* ,该变量是指在训练过程中使用多少数据集进行训练。
 #### 数据集
-<img width="20" src="images/dataset1.png">      数据集 - [百度网盘 (code: 73oj)](https://pan.baidu.com/s/1OycxDBUy8d_bv5L0avnuTg?pwd=73oj)
+<img width="20" src="images/dataset1.png">      数据集 - [百度网盘 (code: h6hu)](https://pan.baidu.com/s/1AR5rFQXmK9FSkUUFg77nHg?pwd=h6hu)
 
 ### 3. 训练脚本
 ```cpp
@@ -123,7 +123,7 @@ python run_evaluation.py
  - 报错：raise RuntimeError(f"MD5 mismatch between the server and the downloaded file {file_path}")
  - 原因：Jittor 在下载 CUTLASS 库时，文件校验失败（MD5 不匹配）
  - 解决方案： 从网上把.zip文件复制下来直接放到相应位置了 可以参考 https://discuss.jittor.org/t/topic/936
- - cutlass文件 - [百度网盘 (code: 73oj)](https://pan.baidu.com/s/1OycxDBUy8d_bv5L0avnuTg?pwd=73oj)
+  - cutlass文件 - [百度网盘 (code: h6hu)](https://pan.baidu.com/s/1AR5rFQXmK9FSkUUFg77nHg?pwd=h6hu)
  3.
  - 报错：CUDA found but cudnn is not loaded
  - 原因：找到了cuda但是没有正确加载
