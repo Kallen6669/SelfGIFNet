@@ -8,6 +8,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import re
 
+# 设置中文字体
+plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
 def merge_results():
     """
     合并两个模型的结果文件
