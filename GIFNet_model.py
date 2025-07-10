@@ -1,26 +1,11 @@
 import jittor as jt
 import numpy as np
-from PIL import Image
 import math
 from args import Args as args
 import jittor.nn as nn
 import os
 
 
-# 工具函数：支持不等量四边反射填充
-# x: (B,C,H,W)
-def reflection_pad(x, left=0, right=0, top=0, bottom=0):
-    # 先左右
-    if left > 0:
-        x = nn.ReflectionPad2d(left)(x)
-    if right > 0:
-        x = nn.ReflectionPad2d(right)(x)
-    # 再上下（通过转置实现）
-    if top > 0:
-        x = nn.ReflectionPad2d(top)(x.transpose(2,3)).transpose(2,3)
-    if bottom > 0:
-        x = nn.ReflectionPad2d(bottom)(x.transpose(2,3)).transpose(2,3)
-    return x
 
 # 手动实现torch的函数
 def _calculate_fan_in_and_fan_out(tensor):
@@ -32,8 +17,6 @@ def _calculate_fan_in_and_fan_out(tensor):
     num_output_fmaps = tensor.size(0)
     receptive_field_size = 1
     if tensor.dim() > 2:
-        # math.prod is not always available, accumulate the product manually
-        # we could use functools.reduce but that is not supported by TorchScript
         for s in tensor.shape[2:]:
             receptive_field_size *= s
     fan_in = num_input_fmaps * receptive_field_size
@@ -46,7 +29,7 @@ def _calculate_fan_in_and_fan_out(tensor):
 # 卷积层
 class ConvLayer(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride, isLast):
-        super(ConvLayer, self).__init__()
+        super().__init__()
         reflection_padding = int(np.floor(kernel_size / 2))
         self.reflection_pad = nn.ReflectionPad2d(reflection_padding)
         # 使用padding=0，因为我们已经用ReflectionPad2d做了填充
@@ -65,7 +48,7 @@ class ConvLayer(nn.Module):
 # 共享特征提取器,也是一种densenet(区别在于)
 class SharedFeatureExtractor(nn.Module):
     def __init__(self, s, n, channel, stride):
-        super(SharedFeatureExtractor, self).__init__()
+        super().__init__()
         # 因为在传入的时候,两个融合图像需要进行拼接,所以说是channel*2
         self.conv_1 = ConvLayer(channel*2, 32, s, stride, isLast = False)
         # conv_2的输入: x(2*channel) + x_1(32) = 2*channel + 32
@@ -82,7 +65,7 @@ class SharedFeatureExtractor(nn.Module):
 # REC分支 
 class ReconstructionDecoder(nn.Module):
     def __init__(self, embed_size, num_decoder_layers):
-        super(ReconstructionDecoder, self).__init__()
+        super().__init__()
         # Decoder
         layers = []
         channels = [embed_size,embed_size//2,embed_size//4,1];
@@ -108,12 +91,12 @@ class RLN(nn.Module):
     r"""Revised LayerNorm"""
 
     def __init__(self, dim, eps=1e-5, detach_grad=False):
-        super(RLN, self).__init__()
+        super().__init__()
         self.eps = eps
         self.detach_grad = detach_grad
 
-        self.weight = jt.ones((1, dim, 1, 1))
-        self.bias = jt.zeros((1, dim, 1, 1))
+        self.weight = jt.array(jt.ones((1, dim, 1, 1)))
+        self.bias = jt.array(jt.zeros((1, dim, 1, 1)))
 
         self.meta1 = nn.Conv2d(1, dim, 1)
         self.meta2 = nn.Conv2d(1, dim, 1)
@@ -219,7 +202,7 @@ class WindowAttention(nn.Module):
 
         super().__init__()
         self.dim = dim
-        self.window_size = window_size  # Wh, Ww
+        self.window_size = window_size  
         self.num_heads = num_heads
         head_dim = dim // num_heads
         self.scale = head_dim ** -0.5
@@ -242,10 +225,8 @@ class WindowAttention(nn.Module):
             qkv = qkv.reshape(B_, N, 3, self.num_heads, self.dim // self.num_heads).permute(2, 0, 3, 1, 4)
             qkv_mfif = qkv_mfif.reshape(B_, N, 3, self.num_heads, self.dim // self.num_heads).permute(2, 0, 3, 1, 4)
 
-            q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
-            q_mfif, k_mfif, v_mfif = qkv_mfif[0], qkv_mfif[1], qkv_mfif[2]  # make torchscript happy (cannot use tensor as tuple)
-
-            #text modality -> vision
+            q, k, v = qkv[0], qkv[1], qkv[2]  
+            q_mfif, k_mfif, v_mfif = qkv_mfif[0], qkv_mfif[1], qkv_mfif[2]  
             with jt.no_grad():            
                 q = q * self.scale
             q_mfif = q_mfif * self.scale
@@ -277,8 +258,8 @@ class WindowAttention(nn.Module):
             qkv = qkv.reshape(B_, N, 3, self.num_heads, self.dim // self.num_heads).permute(2, 0, 3, 1, 4)
             qkv_mfif = qkv_mfif.reshape(B_, N, 3, self.num_heads, self.dim // self.num_heads).permute(2, 0, 3, 1, 4)
 
-            q, k, v = qkv[0], qkv[1], qkv[2]  # make torchscript happy (cannot use tensor as tuple)
-            q_mfif, k_mfif, v_mfif = qkv_mfif[0], qkv_mfif[1], qkv_mfif[2]  # make torchscript happy (cannot use tensor as tuple)
+            q, k, v = qkv[0], qkv[1], qkv[2]  
+            q_mfif, k_mfif, v_mfif = qkv_mfif[0], qkv_mfif[1], qkv_mfif[2]  
 
             q = q * self.scale
             with jt.no_grad():
@@ -310,34 +291,6 @@ class WindowAttention(nn.Module):
         return x_ivif, x_mfif
 
 spe_transformer_cur_depth = 0
-
-def save_feature_maps_as_images(feature_maps, alias, numFeatures = 3, output_folder="visualization"):
-    global spe_transformer_cur_depth
-    # Check if the output folder exists, create it if not
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-
-    # Assuming feature_maps is a Jittor tensor with dimensions BxCxHxW
-    batch_size, num_channels, height, width = feature_maps.shape    
-    for i in range(batch_size):
-        for j in range(numFeatures):
-            # Get the j-th channel of the i-th feature map
-            channel_data = feature_maps[i, j, :, :].numpy()
-
-            # Normalize values to be in the range [0, 255]
-            channel_data = (channel_data - channel_data.min()) / (channel_data.max() - channel_data.min()) * 255
-
-            # Convert to uint8
-            channel_data = channel_data.astype('uint8')
-
-            # Create a PIL Image from the numpy array
-            image = Image.fromarray(channel_data)
-
-            # Save the image
-            image_path = os.path.join(output_folder, f"content_{alias}_spe_transformer_cur_depth_{spe_transformer_cur_depth}_feature_map_{0}_channel_{j}.jpg")
-            image.save(image_path)
-
-
 
 #SwinTransformer - Attention
 class Attention(nn.Module):
@@ -405,13 +358,18 @@ class Attention(nn.Module):
         mod_pad_w = (self.window_size - w % self.window_size) % self.window_size
 
         if shift:
-            pad_left = self.shift_size
-            pad_right = (self.window_size-self.shift_size+mod_pad_w) % self.window_size
             pad_top = self.shift_size
-            pad_bottom = (self.window_size-self.shift_size+mod_pad_h) % self.window_size
-            x = reflection_pad(x, left=pad_left, right=pad_right, top=pad_top, bottom=pad_bottom)
+            pad_bottom = (self.window_size - self.shift_size + mod_pad_h) % self.window_size
+            pad_left = self.shift_size
+            pad_right = (self.window_size - self.shift_size + mod_pad_w) % self.window_size
         else:
-            x = reflection_pad(x, right=mod_pad_w, bottom=mod_pad_h)
+            pad_top = 0
+            pad_bottom = mod_pad_h
+            pad_left = 0
+            pad_right = mod_pad_w
+
+        pad = [pad_left, pad_right, pad_top, pad_bottom]
+        x = nn.pad(x, pad, mode='reflect')
         return x
 
     def execute(self, x_ivif, x_mfif, trainingTag):
@@ -420,24 +378,16 @@ class Attention(nn.Module):
         #MFIF task
         if (trainingTag == 2):
         
-            #print(x_ivif.shape);
             if self.conv_type == 'DWConv' or self.use_attn:
                 with jt.no_grad():            
                     V = self.V(x_ivif)
                 V_mfif = self.V_mfif(x_mfif)
-
-            #save_feature_maps_as_images(V_mfif,"v_mfif");
-            
-            #print("V.shape:");
-            #print(V.shape);
 
             if self.use_attn:
                 with jt.no_grad():            
                     QK = self.QK(x_ivif)
                 QK_mfif = self.QK_mfif(x_mfif)
 
-                #save_feature_maps_as_images(QK_mfif[:,:self.dim,:,:],"q_mfif");
-                #save_feature_maps_as_images(QK_mfif[:,self.dim:,:,:],"k_mfif");
 
                 with jt.no_grad():
                     QKV = jt.concat([QK, V], dim=1)
@@ -457,11 +407,8 @@ class Attention(nn.Module):
                     shifted_QKV = shifted_QKV.permute(0, 2, 3, 1)
                 shifted_QKV_mfif = shifted_QKV_mfif.permute(0, 2, 3, 1)
 
-                qkv = window_partition(shifted_QKV, self.window_size)  # nW*B, window_size**2, C
-                qkv_mfif = window_partition(shifted_QKV_mfif, self.window_size)  # nW*B, window_size**2, C
-
-                #attn_windows = self.attn(qkv)
-                #attn_windows_mfif = self.attn(qkv_mfif)
+                qkv = window_partition(shifted_QKV, self.window_size)  
+                qkv_mfif = window_partition(shifted_QKV_mfif, self.window_size)  
                 attn_windows, attn_windows_mfif = self.attn(qkv, qkv_mfif, trainingTag)
                 
 
@@ -491,19 +438,16 @@ class Attention(nn.Module):
 
             else:
                 if self.conv_type == 'Conv':
-                    out = self.conv(self.reflection_pad(x_ivif))                # no attention and use conv, no projection
-                    out_mfif = self.conv_mfif(self.reflection_pad(x_mfif))                # no attention and use conv, no projection
+                    out = self.conv(self.reflection_pad(x_ivif))                
+                    out_mfif = self.conv_mfif(self.reflection_pad(x_mfif))                
                 elif self.conv_type == 'DWConv':
                     out = self.proj(self.conv(self.reflection_pad(V)))
                     out_mfif = self.proj_mfif(self.conv_mfif(self.reflection_pad(V_mfif)))
         elif (trainingTag == 1):
-            #print(x_ivif.shape);
             if self.conv_type == 'DWConv' or self.use_attn:
                 V = self.V(x_ivif)
                 with jt.no_grad():
                     V_mfif = self.V_mfif(x_mfif)
-            #print("V.shape:");
-            #print(V.shape);
             if self.use_attn:
                 QK = self.QK(x_ivif)
                 with jt.no_grad():
@@ -511,10 +455,6 @@ class Attention(nn.Module):
 
                 QKV = jt.concat([QK, V], dim=1)
                 
-                #print("QKV.shape:");
-                #print(QKV.shape);                
-                #
-                #print(V.shape);                
                 with jt.no_grad():
                     QKV_mfif = jt.concat([QK_mfif, V_mfif], dim=1)
 
@@ -532,8 +472,6 @@ class Attention(nn.Module):
                 qkv = window_partition(shifted_QKV, self.window_size)  # nW*B, window_size**2, C
                 qkv_mfif = window_partition(shifted_QKV_mfif, self.window_size)  # nW*B, window_size**2, C
 
-                #attn_windows = self.attn(qkv)
-                #attn_windows_mfif = self.attn(qkv_mfif)
                 attn_windows, attn_windows_mfif = self.attn(qkv, qkv_mfif, trainingTag)
                 
 
@@ -563,8 +501,8 @@ class Attention(nn.Module):
 
             else:
                 if self.conv_type == 'Conv':
-                    out = self.conv(x_ivif)                # no attention and use conv, no projection
-                    out_mfif = self.conv_mfif(x_mfif)                # no attention and use conv, no projection
+                    out = self.conv(x_ivif)               
+                    out_mfif = self.conv_mfif(x_mfif)                
                 elif self.conv_type == 'DWConv':
                     out = self.proj(self.conv(V))
                     out_mfif = self.proj_mfif(self.conv_mfif(V_mfif))
@@ -716,8 +654,8 @@ class BasicLayer(nn.Module):
                              shift_size=0 if (i % 2 == 0) else window_size // 2,
                              use_attn=use_attns[i], conv_type=conv_type)
             for i in range(depth)])
-        self.weights = [jt.rand(1) for _ in range(depth)]            
-        self.weights_mfif = [jt.rand(1) for _ in range(depth)]            
+        self.weights = [jt.array(jt.rand(1)) for _ in range(depth)]            
+        self.weights_mfif = [jt.array(jt.rand(1)) for _ in range(depth)]            
 
     def execute(self, x_ivif, x_mfif, trainingTag):
         global spe_transformer_cur_depth
@@ -743,15 +681,10 @@ class BasicLayer(nn.Module):
             return x_mfif;
 
 
-
 #SwinTransformer - Main
 class TransformerNet(nn.Module):
     def __init__(self):
-        super(TransformerNet, self).__init__()
-        # n = 128  # number of filters
-        # s = 3  # filter size
-        # num_block = 4  # number of layers
-        # Channel = 3
+        super().__init__()
     
         self.patch_size = 4
         embed_dims=[32+32+32+2,48]
@@ -779,12 +712,11 @@ class TransformerNet(nn.Module):
         _, _, h, w = x.shape
         mod_pad_h = (self.patch_size - h % self.patch_size) % self.patch_size
         mod_pad_w = (self.patch_size - w % self.patch_size) % self.patch_size
-        x = reflection_pad(x, right=mod_pad_w, bottom=mod_pad_h)
+        x = nn.pad(x, (0, mod_pad_w, 0,  mod_pad_h), mode='reflect')
         return x, mod_pad_w, mod_pad_h
 
     def execute(self, x_ivif, x_mfif, trainingTag):
 
-        #save_feature_maps_as_images(x_ivif,"cnnFeatures_ivif",20);
 
         x_ivif, mod_pad_w_ivif, mod_pad_h_ivif = self.check_image_size(x_ivif);     
         x_mfif, mod_pad_w_mfif, mod_pad_h_mfif = self.check_image_size(x_mfif);     
@@ -794,9 +726,6 @@ class TransformerNet(nn.Module):
         
         x = self.layer1(x_ivif, x_mfif, trainingTag);        
       
-        #save_feature_maps_as_images(x_mfif,"afterAttentionMF",20);
-        #save_feature_maps_as_images(x_ivif,"afterAttentionIVIF",20);
-        
         x = self.patch_unembed(x);        
         _,_,h,w = x.shape
         
@@ -808,7 +737,7 @@ class TransformerNet(nn.Module):
 # 提取特定任务的特征
 class TransformerSpecificExtractor(nn.Module):
     def __init__(self):
-        super(TransformerSpecificExtractor, self).__init__()
+        super().__init__()
 
         self.SwinTransformerSpecific = TransformerNet()
 
@@ -822,7 +751,7 @@ class TransformerSpecificExtractor(nn.Module):
 #Shared feature fusion module
 class ComplementFeatureFusionModule(nn.Module):
     def __init__(self, dim, height=2, reduction=8):
-        super(ComplementFeatureFusionModule, self).__init__()
+        super().__init__()
 
         self.height = height
         d = (32+32+32+2)
@@ -848,7 +777,7 @@ class ComplementFeatureFusionModule(nn.Module):
 
 class CNNspecificDecoder(nn.Module):
     def __init__(self, embed_size, num_decoder_layers):
-        super(CNNspecificDecoder, self).__init__()
+        super().__init__()
         
         self.fuseComplementFeatures = ComplementFeatureFusionModule(embed_size*2)        
         # Decoder
@@ -875,13 +804,10 @@ class CNNspecificDecoder(nn.Module):
 
 class GIFNet(nn.Module):
     def __init__(self, s, n, channel, stride):
-        super(GIFNet, self).__init__()
+        super().__init__()
         self.getSharedFeatures = SharedFeatureExtractor(s, n, channel, stride)
         num_decoder_layers = 4
         self.decoder_rec = ReconstructionDecoder(n,num_decoder_layers)
-        # heads = 4
-        # num_transformer_blocks = 2
-
         self.extractor_multask = TransformerSpecificExtractor()
         self.cnnDecoder = CNNspecificDecoder(n, num_decoder_layers)
 
@@ -890,7 +816,7 @@ class GIFNet(nn.Module):
         fea_x = self.getSharedFeatures(x)
         return fea_x;   
 
-    #trainingTag = 1, IVIF task; trainingTag = 2, MFIF task;
+    #trainingTag = 1是 IVIF 任务; trainingTag = 2是MFIF 任务;
     def forward_MultiTask_branch(self, fea_com_ivif, fea_com_mfif, trainingTag = 1):
         x = self.extractor_multask(fea_com_ivif, fea_com_mfif, trainingTag);
         return x;
