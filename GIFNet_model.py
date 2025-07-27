@@ -1,11 +1,12 @@
 import jittor as jt
 import numpy as np
 import math
-from args import Args as args
 import jittor.nn as nn
-import os
+import random
 
-
+random.seed(42)
+np.random.seed(42)
+jt.set_global_seed(42)
 
 # 手动实现torch的函数
 def _calculate_fan_in_and_fan_out(tensor):
@@ -32,7 +33,6 @@ class ConvLayer(nn.Module):
         super().__init__()
         reflection_padding = int(np.floor(kernel_size / 2))
         self.reflection_pad = nn.ReflectionPad2d(reflection_padding)
-        # 使用padding=0，因为我们已经用ReflectionPad2d做了填充
         self.conv2d = nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding=0)
         if (isLast == True):
             self.ac = nn.Tanh()
@@ -45,21 +45,17 @@ class ConvLayer(nn.Module):
         out = self.ac(out)
         return out
 
-# 共享特征提取器,也是一种densenet(区别在于)
 class SharedFeatureExtractor(nn.Module):
-    def __init__(self, s, n, channel, stride):
+    def __init__(self, s, stride):
         super().__init__()
-        # 因为在传入的时候,两个融合图像需要进行拼接,所以说是channel*2
-        self.conv_1 = ConvLayer(channel*2, 32, s, stride, isLast = False)
-        # conv_2的输入: x(2*channel) + x_1(32) = 2*channel + 32
-        self.conv_2 = ConvLayer(channel*2 + 32, 32, s, stride, isLast = False)
-        # conv_3的输入: x(2*channel) + x_1(32) + x_2(32) = 2*channel + 32 + 32
-        self.conv_3 = ConvLayer(channel*2 + 32 + 32, 32, s, stride, isLast = False)
+        self.conv_1 = ConvLayer(2, 32, s, stride, isLast = False)
+        self.conv_2 = ConvLayer(2 + 32, 32, s, stride, isLast = False)
+        self.conv_3 = ConvLayer(2 + 32 + 32, 32, s, stride, isLast = False)
 
     def execute(self, x):
-        x_1 = self.conv_1(x)  # Z_0
-        x_2 = self.conv_2(jt.concat((x,x_1),1))  # Z_0
-        x_3 = self.conv_3(jt.concat((x,x_1,x_2),1))  # Z_0        
+        x_1 = self.conv_1(x) 
+        x_2 = self.conv_2(jt.concat((x,x_1),1)) 
+        x_3 = self.conv_3(jt.concat((x,x_1,x_2),1)) 
         return jt.concat((x,x_1,x_2,x_3),1)
 
 # REC分支 
@@ -88,8 +84,6 @@ class ReconstructionDecoder(nn.Module):
 
 # 归一化层
 class RLN(nn.Module):
-    r"""Revised LayerNorm"""
-
     def __init__(self, dim, eps=1e-5, detach_grad=False):
         super().__init__()
         self.eps = eps
@@ -209,7 +203,8 @@ class WindowAttention(nn.Module):
         self.shift_size = shift_size
 
         relative_positions = get_relative_positions(self.window_size)
-        self.register_buffer("relative_positions", relative_positions)
+        self.relative_positions = relative_positions
+        relative_positions.stop_grad()
         self.meta = nn.Sequential(
             nn.Linear(2, 256, bias=True),
             nn.ReLU(),
@@ -232,10 +227,8 @@ class WindowAttention(nn.Module):
             q_mfif = q_mfif * self.scale
             
             with jt.no_grad():            
-                if (self.shift_size == 0):
-                    attn = (q_mfif @ k.transpose(-2, -1))            
-                else:
-                    attn = (q @ k.transpose(-2, -1))            
+                attn_cross = (q_mfif @ k.transpose(-2, -1))            
+                attn = (q @ k.transpose(-2, -1))            
             attn_mfif = (q_mfif @ k_mfif.transpose(-2, -1))
 
 
@@ -243,14 +236,17 @@ class WindowAttention(nn.Module):
             relative_position_bias = relative_position_bias.permute(2, 0, 1)  # nH, Wh*Ww, Wh*Ww
 
             with jt.no_grad():
+                attn_cross = attn_cross + jt.unsqueeze(relative_position_bias, 0)        
                 attn = attn + jt.unsqueeze(relative_position_bias, 0)        
             attn_mfif = attn_mfif + jt.unsqueeze(relative_position_bias, 0)
 
             with jt.no_grad():
+                attn_cross = self.softmax(attn_cross)
                 attn = self.softmax(attn)
             attn_mfif = self.softmax(attn_mfif)
 
             with jt.no_grad():        
+                x_cross = (attn_cross @ v).transpose(1, 2).reshape(B_, N, self.dim)
                 x_ivif = (attn @ v).transpose(1, 2).reshape(B_, N, self.dim)
             x_mfif = (attn_mfif @ v_mfif).transpose(1, 2).reshape(B_, N, self.dim)
         elif (trainingTag == 1):
@@ -268,10 +264,8 @@ class WindowAttention(nn.Module):
             attn = (q @ k.transpose(-2, -1))
             
             with jt.no_grad():
-                if (self.shift_size == 0):
-                    attn_mfif = (q @ k_mfif.transpose(-2, -1))
-                else:
-                    attn_mfif = (q_mfif @ k_mfif.transpose(-2, -1))
+                attn_cross = (q @ k_mfif.transpose(-2, -1))
+                attn_mfif = (q_mfif @ k_mfif.transpose(-2, -1))
 
             relative_position_bias = self.meta(self.relative_positions)
             relative_position_bias = relative_position_bias.permute(2, 0, 1)  # nH, Wh*Ww, Wh*Ww
@@ -279,22 +273,25 @@ class WindowAttention(nn.Module):
             attn = attn + jt.unsqueeze(relative_position_bias, 0)        
             with jt.no_grad():
                 attn_mfif = attn_mfif + jt.unsqueeze(relative_position_bias, 0)
+                attn_cross = attn_cross + jt.unsqueeze(relative_position_bias, 0)
 
             attn = self.softmax(attn)
             with jt.no_grad():
                 attn_mfif = self.softmax(attn_mfif)
+                attn_cross = self.softmax(attn_cross)
 
             x_ivif = (attn @ v).transpose(1, 2).reshape(B_, N, self.dim)
             with jt.no_grad():        
+                x_cross = (attn_cross @ v_mfif).transpose(1, 2).reshape(B_, N, self.dim)
                 x_mfif = (attn_mfif @ v_mfif).transpose(1, 2).reshape(B_, N, self.dim)
 
-        return x_ivif, x_mfif
+        return x_ivif, x_mfif, x_cross
 
 spe_transformer_cur_depth = 0
 
 #SwinTransformer - Attention
 class Attention(nn.Module):
-    def __init__(self, network_depth, dim, num_heads, window_size, shift_size, use_attn=False, conv_type=None):
+    def __init__(self, network_depth, dim, num_heads, window_size, shift_size):
         super().__init__()
         self.dim = dim
         self.head_dim = int(dim // num_heads)
@@ -304,34 +301,19 @@ class Attention(nn.Module):
         self.shift_size = shift_size
 
         self.network_depth = network_depth
-        self.use_attn = use_attn
-        self.conv_type = conv_type
 
-        if self.conv_type == 'Conv':
-            # 使用ReflectionPad2d + Conv2d(padding=0)来实现反射填充
-            self.reflection_pad = nn.ReflectionPad2d(1)
-            self.conv = nn.Sequential(
-                nn.Conv2d(dim, dim, kernel_size=3, padding=0),
-                nn.ReLU(),
-                nn.Conv2d(dim, dim, kernel_size=3, padding=0)
-            )
+        # 使用ReflectionPad2d + Conv2d(padding=0)来实现反射填充
+        self.reflection_pad = nn.ReflectionPad2d(2)
+        self.conv = nn.Conv2d(dim, dim, kernel_size=5, padding=0, groups=dim)
+        self.conv_mfif = nn.Conv2d(dim, dim, kernel_size=5, padding=0, groups=dim)
 
-        if self.conv_type == 'DWConv':
-            # 使用ReflectionPad2d + Conv2d(padding=0)来实现反射填充
-            self.reflection_pad = nn.ReflectionPad2d(2)
-            self.conv = nn.Conv2d(dim, dim, kernel_size=5, padding=0, groups=dim)
-            self.conv_mfif = nn.Conv2d(dim, dim, kernel_size=5, padding=0, groups=dim)
-
-        if self.conv_type == 'DWConv' or self.use_attn:
-            self.V = nn.Conv2d(dim, dim, 1)
-            self.V_mfif = nn.Conv2d(dim, dim, 1)
-            self.proj = nn.Conv2d(dim, dim, 1)
-            self.proj_mfif = nn.Conv2d(dim, dim, 1)
-
-        if self.use_attn:
-            self.QK = nn.Conv2d(dim, 2*dim, 1)
-            self.QK_mfif = nn.Conv2d(dim, 2*dim, 1)
-            self.attn = WindowAttention(dim, window_size, num_heads, shift_size)
+        self.V = nn.Conv2d(dim, dim, 1)
+        self.V_mfif = nn.Conv2d(dim, dim, 1)
+        self.proj = nn.Conv2d(dim, dim, 1)
+        self.proj_mfif = nn.Conv2d(dim, dim, 1)
+        self.QK = nn.Conv2d(dim, 2*dim, 1)
+        self.QK_mfif = nn.Conv2d(dim, 2*dim, 1)
+        self.attn = WindowAttention(dim, window_size, num_heads, shift_size)
 
         self.apply(self._init_weights)
 
@@ -378,136 +360,114 @@ class Attention(nn.Module):
         #MFIF task
         if (trainingTag == 2):
         
-            if self.conv_type == 'DWConv' or self.use_attn:
-                with jt.no_grad():            
-                    V = self.V(x_ivif)
-                V_mfif = self.V_mfif(x_mfif)
+            with jt.no_grad():            
+                V = self.V(x_ivif)
+            V_mfif = self.V_mfif(x_mfif)
 
-            if self.use_attn:
-                with jt.no_grad():            
-                    QK = self.QK(x_ivif)
+            with jt.no_grad():            
+                QK = self.QK(x_ivif)
+            QK_mfif = self.QK_mfif(x_mfif)
+
+            with jt.no_grad():
+                QKV = jt.concat([QK, V], dim=1)
+            QKV_mfif = jt.concat([QK_mfif, V_mfif], dim=1)
+
+            with jt.no_grad():                
+                shifted_QKV = self.check_size(QKV, self.shift_size > 0)
+            shifted_QKV_mfif = self.check_size(QKV_mfif, self.shift_size > 0)
+            
+            
+            Ht, Wt = shifted_QKV.shape[2:]
+
+            # partition windows
+            with jt.no_grad():                
+                shifted_QKV = shifted_QKV.permute(0, 2, 3, 1)
+            shifted_QKV_mfif = shifted_QKV_mfif.permute(0, 2, 3, 1)
+
+            qkv = window_partition(shifted_QKV, self.window_size)  
+            qkv_mfif = window_partition(shifted_QKV_mfif, self.window_size)  
+            attn_windows, attn_windows_mfif, attn_windows_cross = self.attn(qkv, qkv_mfif, trainingTag)
+            
+
+            # merge windows
+            shifted_out = window_reverse(attn_windows, self.window_size, Ht, Wt)  # B H' W' C
+            shifted_out_mfif = window_reverse(attn_windows_mfif, self.window_size, Ht, Wt)  # B H' W' C
+            shifted_out_cross= window_reverse(attn_windows_cross, self.window_size, Ht, Wt)  # B H' W' C
+
+            # reverse cyclic shift
+            out = shifted_out[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
+            out_mfif = shifted_out_mfif[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
+            out_cross= shifted_out_cross[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
+
+            attn_out = out.permute(0, 3, 1, 2)
+            attn_out_mfif = out_mfif.permute(0, 3, 1, 2)
+            attn_out_cross= out_cross.permute(0, 3, 1, 2)
+
+            with jt.no_grad():                
+                conv_cross = self.conv(self.reflection_pad(V))
+                conv_out = self.conv(self.reflection_pad(V))
+            conv_out_mfif = self.conv_mfif(self.reflection_pad(V_mfif))
+            
+            with jt.no_grad():                    
+                out_cross = self.proj(conv_cross+attn_out_cross)
+                out = self.proj(conv_out + attn_out)
+            out_mfif = self.proj_mfif(conv_out_mfif + attn_out_mfif)
+
+        elif (trainingTag == 1):
+            V = self.V(x_ivif)
+            with jt.no_grad():
+                V_mfif = self.V_mfif(x_mfif)
+            QK = self.QK(x_ivif)
+            with jt.no_grad():
                 QK_mfif = self.QK_mfif(x_mfif)
 
-
-                with jt.no_grad():
-                    QKV = jt.concat([QK, V], dim=1)
+            QKV = jt.concat([QK, V], dim=1)
+            
+            with jt.no_grad():
                 QKV_mfif = jt.concat([QK_mfif, V_mfif], dim=1)
 
-
-
-                with jt.no_grad():                
-                    shifted_QKV = self.check_size(QKV, self.shift_size > 0)
+            # shift
+            shifted_QKV = self.check_size(QKV, self.shift_size > 0)
+            with jt.no_grad():
                 shifted_QKV_mfif = self.check_size(QKV_mfif, self.shift_size > 0)
-                
-                
-                Ht, Wt = shifted_QKV.shape[2:]
+            Ht, Wt = shifted_QKV.shape[2:]
 
-                # partition windows
-                with jt.no_grad():                
-                    shifted_QKV = shifted_QKV.permute(0, 2, 3, 1)
+            # partition windows
+            shifted_QKV = shifted_QKV.permute(0, 2, 3, 1)
+            with jt.no_grad():
                 shifted_QKV_mfif = shifted_QKV_mfif.permute(0, 2, 3, 1)
 
-                qkv = window_partition(shifted_QKV, self.window_size)  
-                qkv_mfif = window_partition(shifted_QKV_mfif, self.window_size)  
-                attn_windows, attn_windows_mfif = self.attn(qkv, qkv_mfif, trainingTag)
-                
+            qkv = window_partition(shifted_QKV, self.window_size)  # nW*B, window_size**2, C
+            qkv_mfif = window_partition(shifted_QKV_mfif, self.window_size)  # nW*B, window_size**2, C
 
-                # merge windows
-                shifted_out = window_reverse(attn_windows, self.window_size, Ht, Wt)  # B H' W' C
-                shifted_out_mfif = window_reverse(attn_windows_mfif, self.window_size, Ht, Wt)  # B H' W' C
+            attn_windows, attn_windows_mfif, attn_windows_cross = self.attn(qkv, qkv_mfif, trainingTag)
+            
 
-                # reverse cyclic shift
-                out = shifted_out[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
-                out_mfif = shifted_out_mfif[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
+            # merge windows
+            shifted_out = window_reverse(attn_windows, self.window_size, Ht, Wt)  # B H' W' C
+            shifted_out_mfif = window_reverse(attn_windows_mfif, self.window_size, Ht, Wt)  # B H' W' C
+            shifted_out_cross= window_reverse(attn_windows_cross, self.window_size, Ht, Wt)  # B H' W' C
 
-                attn_out = out.permute(0, 3, 1, 2)
-                attn_out_mfif = out_mfif.permute(0, 3, 1, 2)
+            # reverse cyclic shift
+            out = shifted_out[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
+            out_mfif = shifted_out_mfif[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
+            out_cross = shifted_out_cross[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
 
-                if self.conv_type in ['Conv', 'DWConv']:
-                    with jt.no_grad():                
-                        conv_out = self.conv(self.reflection_pad(V))
-                    conv_out_mfif = self.conv_mfif(self.reflection_pad(V_mfif))
-                    
-                    with jt.no_grad():                    
-                        out = self.proj(conv_out + attn_out)
-                    out_mfif = self.proj_mfif(conv_out_mfif + attn_out_mfif)
-                else:
-                    with jt.no_grad():                                    
-                        out = self.proj(attn_out)
-                    out_mfif = self.proj_mfif(attn_out_mfif)
+            attn_out = out.permute(0, 3, 1, 2)
+            attn_out_mfif = out_mfif.permute(0, 3, 1, 2)
+            attn_out_cross= out_cross.permute(0, 3, 1, 2)
 
-            else:
-                if self.conv_type == 'Conv':
-                    out = self.conv(self.reflection_pad(x_ivif))                
-                    out_mfif = self.conv_mfif(self.reflection_pad(x_mfif))                
-                elif self.conv_type == 'DWConv':
-                    out = self.proj(self.conv(self.reflection_pad(V)))
-                    out_mfif = self.proj_mfif(self.conv_mfif(self.reflection_pad(V_mfif)))
-        elif (trainingTag == 1):
-            if self.conv_type == 'DWConv' or self.use_attn:
-                V = self.V(x_ivif)
-                with jt.no_grad():
-                    V_mfif = self.V_mfif(x_mfif)
-            if self.use_attn:
-                QK = self.QK(x_ivif)
-                with jt.no_grad():
-                    QK_mfif = self.QK_mfif(x_mfif)
+            conv_out = self.conv(self.reflection_pad(V))
+            with jt.no_grad():
+                conv_out_mfif = self.conv_mfif(self.reflection_pad(V_mfif))
+                conv_out_cross= self.conv_mfif(self.reflection_pad(V_mfif))
+            
+            out = self.proj(conv_out + attn_out)
+            with jt.no_grad():
+                out_mfif = self.proj_mfif(conv_out_mfif + attn_out_mfif)
+                out_cross = self.proj_mfif(conv_out_cross+ attn_out_cross)
 
-                QKV = jt.concat([QK, V], dim=1)
-                
-                with jt.no_grad():
-                    QKV_mfif = jt.concat([QK_mfif, V_mfif], dim=1)
-
-                # shift
-                shifted_QKV = self.check_size(QKV, self.shift_size > 0)
-                with jt.no_grad():
-                    shifted_QKV_mfif = self.check_size(QKV_mfif, self.shift_size > 0)
-                Ht, Wt = shifted_QKV.shape[2:]
-
-                # partition windows
-                shifted_QKV = shifted_QKV.permute(0, 2, 3, 1)
-                with jt.no_grad():
-                    shifted_QKV_mfif = shifted_QKV_mfif.permute(0, 2, 3, 1)
-
-                qkv = window_partition(shifted_QKV, self.window_size)  # nW*B, window_size**2, C
-                qkv_mfif = window_partition(shifted_QKV_mfif, self.window_size)  # nW*B, window_size**2, C
-
-                attn_windows, attn_windows_mfif = self.attn(qkv, qkv_mfif, trainingTag)
-                
-
-                # merge windows
-                shifted_out = window_reverse(attn_windows, self.window_size, Ht, Wt)  # B H' W' C
-                shifted_out_mfif = window_reverse(attn_windows_mfif, self.window_size, Ht, Wt)  # B H' W' C
-
-                # reverse cyclic shift
-                out = shifted_out[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
-                out_mfif = shifted_out_mfif[:, self.shift_size:(self.shift_size+H), self.shift_size:(self.shift_size+W), :]
-
-                attn_out = out.permute(0, 3, 1, 2)
-                attn_out_mfif = out_mfif.permute(0, 3, 1, 2)
-
-                if self.conv_type in ['Conv', 'DWConv']:
-                    conv_out = self.conv(self.reflection_pad(V))
-                    with jt.no_grad():
-                        conv_out_mfif = self.conv_mfif(self.reflection_pad(V))
-                    
-                    out = self.proj(conv_out + attn_out)
-                    with jt.no_grad():
-                        out_mfif = self.proj_mfif(conv_out_mfif + attn_out_mfif)
-                else:
-                    out = self.proj(attn_out)
-                    with jt.no_grad():                    
-                        out_mfif = self.proj_mfif(attn_out_mfif)
-
-            else:
-                if self.conv_type == 'Conv':
-                    out = self.conv(x_ivif)               
-                    out_mfif = self.conv_mfif(x_mfif)                
-                elif self.conv_type == 'DWConv':
-                    out = self.proj(self.conv(V))
-                    out_mfif = self.proj_mfif(self.conv_mfif(V_mfif))
-        
-        return out, out_mfif
+        return out, out_mfif, out_cross
 
 
 class Mlp(nn.Module):
@@ -542,8 +502,8 @@ class Mlp(nn.Module):
 #SwinTransformer - TransformerBlock
 class TransformerBlock(nn.Module):
     def __init__(self, network_depth, dim, num_heads, mlp_ratio=4.,
-                 norm_layer=nn.LayerNorm, mlp_norm=False,
-                 window_size=8, shift_size=0, use_attn=True, conv_type=None):
+                 norm_layer=nn.LayerNorm, mlp_norm=True,
+                 window_size=8, shift_size=0, use_attn=True,):
         super().__init__()
         self.use_attn = use_attn
         self.mlp_norm = mlp_norm
@@ -551,7 +511,7 @@ class TransformerBlock(nn.Module):
         self.norm1 = norm_layer(dim) if use_attn else nn.Identity()
         self.norm1_mfif = norm_layer(dim) if use_attn else nn.Identity()
         self.attn = Attention(network_depth, dim, num_heads=num_heads, window_size=window_size,
-                              shift_size=shift_size, use_attn=use_attn, conv_type=conv_type)
+                              shift_size=shift_size)
 
         self.norm2 = norm_layer(dim) if use_attn and mlp_norm else nn.Identity()
         self.norm2_mfif = norm_layer(dim) if use_attn and mlp_norm else nn.Identity()
@@ -561,88 +521,70 @@ class TransformerBlock(nn.Module):
 
     def execute(self, x_ivif, x_mfif, trainingTag):
     
-        #train IVIF task;
-        if (trainingTag == 1):
-            identity = x_ivif
-            identity_mfif = x_mfif
-            if self.use_attn: x_ivif, rescale, rebias = self.norm1(x_ivif)
-            if self.use_attn: x_mfif, rescale_mfif, rebias_mfif = self.norm1_mfif(x_mfif)
+        identity = x_ivif
+        identity_mfif = x_mfif
+        if trainingTag == 1:
+            identity_cross = x_mfif
+        else:
+            identity_cross = x_ivif
 
-            x_ivif, x_mfif = self.attn(x_ivif, x_mfif, trainingTag)
+        if self.use_attn: 
+            x_ivif, rescale, rebias = self.norm1(x_ivif)
+            x_mfif, rescale_mfif, rebias_mfif = self.norm1_mfif(x_mfif)
+            if trainingTag == 1:
+                _, rescale_cross, rebias_cross = self.norm1_mfif(x_mfif)
+            else:
+                _, rescale_cross, rebias_cross = self.norm1(x_ivif)
 
-            if self.use_attn: x_ivif = x_ivif * rescale + rebias
-            if self.use_attn: x_mfif = x_mfif * rescale_mfif + rebias_mfif
+        x_ivif, x_mfif, x_cross = self.attn(x_ivif, x_mfif, trainingTag)
 
-            x_ivif = identity + x_ivif
-            x_mfif = identity_mfif + x_mfif
+        if self.use_attn: 
+            x_ivif = x_ivif * rescale + rebias
+            x_mfif = x_mfif * rescale_mfif + rebias_mfif
+            x_cross = x_cross * rescale_cross + rebias_cross
 
-            identity = x_ivif
-            identity_mfif = x_mfif
+        x_ivif = identity + x_ivif
+        x_mfif = identity_mfif + x_mfif
+        x_cross = identity_cross + x_cross
 
-            if self.use_attn and self.mlp_norm: x_ivif, rescale, rebias = self.norm2(x_ivif)
-            
-            if self.use_attn and self.mlp_norm: x_mfif, rescale_mfif, rebias_mfif = self.norm2_mfif(x_mfif)
+        identity = x_ivif
+        identity_mfif = x_mfif
+        identity_cross = x_cross
 
-            x_ivif = self.mlp(x_ivif)
-            x_mfif = self.mlp_mfif(x_mfif)
+        if self.use_attn and self.mlp_norm: 
+            x_ivif, rescale, rebias = self.norm2(x_ivif)
+            x_mfif, rescale_mfif, rebias_mfif = self.norm2_mfif(x_mfif)
+            if trainingTag == 1:
+                x_cross, rescale_cross, rebias_cross = self.norm2_mfif(x_cross)
+            else:
+                x_cross, rescale_cross, rebias_cross = self.norm2(x_cross)
 
-            if self.use_attn and self.mlp_norm: x_ivif = x_ivif * rescale + rebias
-            if self.use_attn and self.mlp_norm: x_mfif = x_mfif * rescale_mfif + rebias_mfif
+        x_ivif = self.mlp(x_ivif)
+        x_mfif = self.mlp_mfif(x_mfif)
+        if(trainingTag == 1):
+            x_cross = self.mlp_mfif(x_cross)
+        else:
+            x_cross = self.mlp(x_cross)
 
+        if self.use_attn and self.mlp_norm: 
+            x_ivif = x_ivif * rescale + rebias
+            x_mfif = x_mfif * rescale_mfif + rebias_mfif
+            x_cross = x_cross * rescale_cross + rebias_cross
 
-            x_ivif = identity + x_ivif
-            x_mfif = identity_mfif + x_mfif
-        elif (trainingTag == 2):
-            #trainMFIF task;
-            identity = x_ivif
-            identity_mfif = x_mfif
-            if self.use_attn: x_ivif, rescale, rebias = self.norm1(x_ivif)
-            if self.use_attn: x_mfif, rescale_mfif, rebias_mfif = self.norm1_mfif(x_mfif)
+        x_ivif = identity + x_ivif
+        x_mfif = identity_mfif + x_mfif
+        x_cross = identity_cross + x_cross
 
-            x_ivif, x_mfif = self.attn(x_ivif, x_mfif, trainingTag)
-
-            if self.use_attn: x_ivif = x_ivif * rescale + rebias
-            if self.use_attn: x_mfif = x_mfif * rescale_mfif + rebias_mfif
-
-            x_ivif = identity + x_ivif
-            x_mfif = identity_mfif + x_mfif
-
-            identity = x_ivif
-            identity_mfif = x_mfif
-
-            if self.use_attn and self.mlp_norm: x_ivif, rescale, rebias = self.norm2(x_ivif)
-            
-            if self.use_attn and self.mlp_norm: x_mfif, rescale_mfif, rebias_mfif = self.norm2_mfif(x_mfif)
-
-            x_ivif = self.mlp(x_ivif)
-            x_mfif = self.mlp_mfif(x_mfif)
-
-            if self.use_attn and self.mlp_norm: x_ivif = x_ivif * rescale + rebias
-            if self.use_attn and self.mlp_norm: x_mfif = x_mfif * rescale_mfif + rebias_mfif
-
-
-            x_ivif = identity + x_ivif
-            x_mfif = identity_mfif + x_mfif
-        return x_ivif, x_mfif
+        return x_ivif, x_mfif, x_cross
 
 #Swintransformer - Basic
 class BasicLayer(nn.Module):
     def __init__(self, network_depth, dim, depth, num_heads, mlp_ratio=4.,
-                 norm_layer=nn.LayerNorm, window_size=8,
-                 attn_ratio=0., attn_loc='last', conv_type=None):
+                 norm_layer=nn.LayerNorm, window_size=8, conv_type=None):
 
         super().__init__()
         self.dim = dim
         self.depth = depth
-
-        attn_depth = attn_ratio * depth
-
-        if attn_loc == 'last':
-            use_attns = [i >= depth-attn_depth for i in range(depth)]
-        elif attn_loc == 'first':
-            use_attns = [i < attn_depth for i in range(depth)]
-        elif attn_loc == 'middle':
-            use_attns = [i >= (depth-attn_depth)//2 and i < (depth+attn_depth)//2 for i in range(depth)]
 
         self.blocks = nn.ModuleList([
             TransformerBlock(network_depth=network_depth,
@@ -652,10 +594,12 @@ class BasicLayer(nn.Module):
                              norm_layer=norm_layer,
                              window_size=window_size,
                              shift_size=0 if (i % 2 == 0) else window_size // 2,
-                             use_attn=use_attns[i], conv_type=conv_type)
+                             use_attn=True)
             for i in range(depth)])
-        self.weights = [jt.array(jt.rand(1)) for _ in range(depth)]            
-        self.weights_mfif = [jt.array(jt.rand(1)) for _ in range(depth)]            
+        self.weights = nn.ParameterList([jt.array(jt.rand(1)) for _ in range(depth)])            
+        self.weights_mfif = nn.ParameterList([jt.array(jt.rand(1)) for _ in range(depth)])            
+        # self.weights = [jt.array(jt.rand(1)) for _ in range(depth)]            
+        # self.weights_mfif = [jt.array(jt.rand(1)) for _ in range(depth)]            
 
     def execute(self, x_ivif, x_mfif, trainingTag):
         global spe_transformer_cur_depth
@@ -663,21 +607,21 @@ class BasicLayer(nn.Module):
         if (trainingTag == 1):
             for i, blk in enumerate(self.blocks):
                 #identity_ivif = x_ivif;
-                x_ivif, x_mfif  = blk(x_ivif, x_mfif, trainingTag)
+                x_ivif, x_mfif, x_cross  = blk(x_ivif, x_mfif, trainingTag)
                 weight_i = self.weights[i];          
 
                 if (i % 2 == 0):
-                    x_ivif = x_ivif + weight_i*x_mfif;
+                    x_ivif = x_ivif + weight_i*x_cross;
 
             return x_ivif;
         elif (trainingTag == 2):
         # MFIF train
             for i, blk in enumerate(self.blocks):
                 spe_transformer_cur_depth = i;
-                x_ivif, x_mfif  = blk(x_ivif, x_mfif, trainingTag)
+                x_ivif, x_mfif, x_cross  = blk(x_ivif, x_mfif, trainingTag)
                 weight_i = self.weights_mfif[i];          
                 if (i % 2 == 0):
-                    x_mfif = x_mfif + weight_i*x_ivif;                
+                    x_mfif = x_mfif + weight_i*x_cross;                
             return x_mfif;
 
 
@@ -688,24 +632,24 @@ class TransformerNet(nn.Module):
     
         self.patch_size = 4
         embed_dims=[32+32+32+2,48]
-        depths = [2]
-        num_heads = [2]
-        attn_ratio = [1] #all layers use attention
-        conv_type = ['DWConv']
-        mlp_ratios=[2.]
+        network_depth = 2
+        depths = 2
+        num_heads = 2
+        conv_type = 'DWConv'
+        mlp_ratios=2.
         window_size=8
         in_chans = embed_dims[0]
-        norm_layer=[RLN, RLN, RLN, RLN, RLN]
+        norm_layer=RLN
         # backbone
         self.patch_embed_ivif = PatchEmbed(
             patch_size=1, in_chans=in_chans, embed_dim=embed_dims[0], kernel_size=3)            
             
         self.patch_embed_mfif = PatchEmbed(
             patch_size=1, in_chans=in_chans, embed_dim=embed_dims[0], kernel_size=3)                        
-        self.layer1 = BasicLayer(network_depth=sum(depths), dim=embed_dims[0], depth=depths[0],
-                                 num_heads=num_heads[0], mlp_ratio=mlp_ratios[0],
-                                 norm_layer=norm_layer[0], window_size=window_size,
-                                 attn_ratio=attn_ratio[0], attn_loc='last', conv_type=conv_type[0])     
+        self.layer1 = BasicLayer(network_depth=network_depth, dim=embed_dims[0], depth=depths,
+                                 num_heads=num_heads, mlp_ratio=mlp_ratios,
+                                 norm_layer=norm_layer, window_size=window_size,
+                                 conv_type=conv_type)     
         self.patch_unembed = PatchUnEmbed(patch_size=1, out_chans=embed_dims[0], embed_dim=embed_dims[0], kernel_size=3)                                 
                 
     def check_image_size(self, x):
@@ -750,27 +694,19 @@ class TransformerSpecificExtractor(nn.Module):
 
 #Shared feature fusion module
 class ComplementFeatureFusionModule(nn.Module):
-    def __init__(self, dim, height=2, reduction=8):
+    def __init__(self, dim):
         super().__init__()
 
-        self.height = height
         d = (32+32+32+2)
-
-        self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.mlp = nn.Sequential(
-            nn.Conv2d((32+32+32+2)*2, d, 1, bias=False),
+            nn.Conv2d(2 * d, d, 1, bias=False),
             nn.ReLU(),
             nn.Conv2d(d, dim, 1, bias=False)
         )
 
-        self.softmax = nn.Softmax(dim=1)
-
     def execute(self, in_feats):
-        B, C, H, W = in_feats[0].shape
-
         in_feats = jt.concat(in_feats, dim=1)
-
-        attn = self.mlp(in_feats) # mlp(B*C*1*1)->B*(C*2)*1*1       
+        attn = self.mlp(in_feats)       
 
         return attn
 
@@ -803,9 +739,9 @@ class CNNspecificDecoder(nn.Module):
         return x;
 
 class GIFNet(nn.Module):
-    def __init__(self, s, n, channel, stride):
+    def __init__(self, s, n, stride):
         super().__init__()
-        self.getSharedFeatures = SharedFeatureExtractor(s, n, channel, stride)
+        self.getSharedFeatures = SharedFeatureExtractor(s, stride)
         num_decoder_layers = 4
         self.decoder_rec = ReconstructionDecoder(n,num_decoder_layers)
         self.extractor_multask = TransformerSpecificExtractor()
@@ -816,8 +752,8 @@ class GIFNet(nn.Module):
         fea_x = self.getSharedFeatures(x)
         return fea_x;   
 
-    #trainingTag = 1是 IVIF 任务; trainingTag = 2是MFIF 任务;
-    def forward_MultiTask_branch(self, fea_com_ivif, fea_com_mfif, trainingTag = 1):
+    #trainingTag = 1是 IVIF 任务; trainingTag = 2是MFIF 任务; 但是在测试的时候也使用MFIF
+    def forward_MultiTask_branch(self, fea_com_ivif, fea_com_mfif, trainingTag = 2):
         x = self.extractor_multask(fea_com_ivif, fea_com_mfif, trainingTag);
         return x;
   
@@ -830,8 +766,9 @@ class GIFNet(nn.Module):
         
     def execute(self, x, y):
         output = self.forward_encoder(x, y);
-        output = self.forward_MultiTask_branch(fea_com_ivif = output, fea_com_mfif = output, trainingTag = 2)   
-        return output
+        output_fused = self.forward_MultiTask_branch(fea_com_ivif = output, fea_com_mfif = output, trainingTag = 2)   
+        output_mixed = self.forward_mixed_decoder(fea_com = output, fea_fused = output_fused)
+        return output_mixed
 
 
 
@@ -839,30 +776,39 @@ from jittor.dataset.dataset import DataLoader
 from GIFNetDataset import CustomDataset
 
 if __name__ == "__main__":
-    gifNet = GIFNet(s=3, n=64, channel=1, stride=1)
+    model = GIFNet(s=3, n=64, stride=1)
+    params = sum(p.numel() for p in model.parameters())
+    print(f"Total parameters: {params}")
+    # for name, param in model.named_parameters():
+    #     print(name, param.shape)
+    # print("--------------------------------")
+    # load_model_path = "model_true/MTFusion_net_epoch_10_twoBranches.model"
+    # model.load_state_dict(jt.load(load_model_path))
+    # for name, param in model.named_parameters():
+    #     print(name, param.shape)
 
-    root_dir = "./train_data"
-    image_numbers = list(range(1, 10))
+    # root_dir = "./train_data"
+    # image_numbers = list(range(1, 10))
 
-    # 与pytorch不同的地方，pytorch需要用到torchversion中的transforms
-    def transform(img_array):
-        # 归一化到0-1范围
-        return jt.array(img_array) / 255.0
+    # # 与pytorch不同的地方，pytorch需要用到torchversion中的transforms
+    # def transform(img_array):
+    #     # 归一化到0-1范围
+    #     return jt.array(img_array) / 255.0
 
-    custom_dataset = CustomDataset(root = root_dir, image_numbers = image_numbers, transform = transform)
-    data_loader = DataLoader(custom_dataset, batch_size=1, shuffle=False)
-    for idx, batch in enumerate(data_loader):
-            batch_ir, batch_vi, batch_ir_NF, batch_vi_FF = batch
+    # custom_dataset = CustomDataset(root = root_dir, image_numbers = image_numbers, transform = transform)
+    # data_loader = DataLoader(custom_dataset, batch_size=1, shuffle=False)
+    # for idx, batch in enumerate(data_loader):
+    #         batch_ir, batch_vi, batch_ir_NF, batch_vi_FF = batch
 
-            IVIF_step = 1;
-            MFIF_step = 1;
+    #         IVIF_step = 1;
+    #         MFIF_step = 1;
 
-            fea_com_ivif = gifNet.forward_encoder(batch_ir, batch_vi)
-            with jt.no_grad():
-                fea_com_mfif = gifNet.forward_encoder(batch_ir_NF, batch_vi_FF)
-            out_rec = gifNet.forward_rec_decoder(fea_com_ivif)
-            fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif, fea_com_mfif, trainingTag = 1)
-            out_f = gifNet.forward_mixed_decoder(fea_com_ivif, fea_fused); 
+    #         fea_com_ivif = gifNet.forward_encoder(batch_ir, batch_vi)
+    #         with jt.no_grad():
+    #             fea_com_mfif = gifNet.forward_encoder(batch_ir_NF, batch_vi_FF)
+    #         out_rec = gifNet.forward_rec_decoder(fea_com_ivif)
+    #         fea_fused = gifNet.forward_MultiTask_branch(fea_com_ivif, fea_com_mfif, trainingTag = 1)
+    #         out_f = gifNet.forward_mixed_decoder(fea_com_ivif, fea_fused); 
 
 
 
