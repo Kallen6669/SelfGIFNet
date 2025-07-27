@@ -57,7 +57,7 @@ def main():
     features_4 = nn.Sequential(*features[8:10])
     features_5 = nn.Sequential(*features[10:11])
 
-    gifNet = GIFNet(args.s, args.n, args.channel, args.stride)
+    gifNet = GIFNet(args.s, args.n, 1, args.stride)
     optimizer = Adam(gifNet.parameters(), lr=args.lr)
     mse_loss = nn.MSELoss()
     ssim_loss = msssim
@@ -276,7 +276,7 @@ def main():
         # 保存模型
         gifNet.eval()
         save_model_path = None
-        if (e+1) % 5 == 0:
+        if (e+1) % 1 == 0:
             save_model_filename = "MTFusion_net" + "_epoch_" + str(e + 1) + "_twoBranches"  + ".model"
             save_model_path = os.path.join(temp_path_model, save_model_filename)
             jt.save(gifNet.state_dict(), save_model_path)

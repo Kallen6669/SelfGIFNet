@@ -1,7 +1,8 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # 使用GPU 1
-import cv2
 import jittor as jt
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # 使用GPU 0
+jt.flags.use_cuda = 1
+import cv2
 import time
 import numpy as np
 from GIFNet_model import GIFNet
@@ -12,7 +13,7 @@ from PIL import Image
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--checkpoint', type=str, default='model/Final.model', help='fusion network weight')
+parser.add_argument('--checkpoint', type=str, default='model_true2/MTFusion_net_epoch_10_twoBranches.model', help='fusion network weight')
 
 parser.add_argument('--test_ir_root', type=str, required=True, help='the test ir images root')
 parser.add_argument('--IR_IS_RGB', action='store_true', help='The IR input is stored in RGB format')
@@ -24,14 +25,8 @@ parser.add_argument('--save_path', type=str, default='./outputs/', help='the fus
 
 opt = parser.parse_args()
 
-def resize_images(images, target_size=(128, 128)):
-    return jt.nn.interpolate(images, size=target_size, mode='bilinear', align_corners=False)
-
 def load_model(model_path_twoBranches):
-    # 设置内存管理
-    jt.flags.use_cuda = 1
-    
-    model = GIFNet(args.s, args.n, args.channel, args.stride)
+    model = GIFNet(args.s, args.n, args.stride)
 
     model.load_state_dict(jt.load(model_path_twoBranches))
 
@@ -41,6 +36,9 @@ def load_model(model_path_twoBranches):
     
     total = sum([param.numel() for param in model.parameters()])
     print('Number of parameter: {:4f}M'.format(total / 1e6))
+
+    for name, param in model.named_parameters():
+        print(name, param.shape)
     
     model.eval()
 
@@ -64,7 +62,8 @@ def run(model, ir_test_batch, vis_test_batch, output_path, img_name):
     #print(img_ir.dtype)
     #print(img_vi.dtype)
     fea_com = model.forward_encoder(img_ir, img_vi)    
-    fea_fused = model.forward_MultiTask_branch(fea_com_ivif = fea_com, fea_com_mfif = fea_com)            
+    # out_y_or_gray = model.forward_rec_decoder(fea_com)
+    fea_fused = model.forward_MultiTask_branch(fea_com_ivif = fea_com, fea_com_mfif = fea_com, trainingTag = 2)            
     out_y_or_gray = model.forward_mixed_decoder(fea_com, fea_fused);    
     
     out_y_or_gray = out_y_or_gray[0,0,:,:].numpy()
@@ -127,7 +126,7 @@ def fuse_cb_cr(Cb1,Cr1,Cb2,Cr2):
 
 def main():
 
-    jt.flags.use_cuda = 1
+
     model_path_twoBranches = opt.checkpoint
 
     output_path = opt.save_path
